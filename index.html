@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Santo Rosario por Día</title>
+    <!-- Incluye Tailwind CSS para un diseño moderno y responsivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            @apply bg-gray-100 text-gray-800 flex items-center justify-center min-h-screen p-4;
+        }
+        /* Estilo para los textos largos de las oraciones */
+        #current-prayer-text {
+            white-space: pre-wrap; /* Permite saltos de línea y espacios en blanco */
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-50">
+
+    <!-- Contenedor principal de la aplicación -->
+    <div class="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 w-full max-w-sm flex flex-col items-center text-center">
+        <!-- Título y imagen decorativa -->
+        <h1 class="text-3xl font-bold text-blue-700 mb-2">El Santo Rosario</h1>
+        <p class="text-sm text-gray-500 font-medium mb-4">Guía de oración completa</p>
+        <div class="relative w-48 h-48 mb-6 overflow-hidden rounded-full shadow-lg">
+            <img src="https://placehold.co/400x400/D0DDE7/69798C?text=Rosario" alt="Imagen de un rosario" class="w-full h-full object-cover animate-pulse-slow">
+        </div>
+        
+        <!-- Contenedor para la selección del día y la guía -->
+        <div id="start-screen" class="w-full">
+            <h2 class="text-xl font-bold text-gray-700 mb-4 text-center">Selecciona un día para rezar</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <button data-day="monday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md">Lunes</button>
+                <button data-day="tuesday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md">Martes</button>
+                <button data-day="wednesday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md">Miércoles</button>
+                <button data-day="thursday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md">Jueves</button>
+                <button data-day="friday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md">Viernes</button>
+                <button data-day="saturday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md">Sábado</button>
+                <button data-day="sunday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md col-span-2">Domingo</button>
+            </div>
+            <div id="mystery-guide" class="w-full text-left mt-6">
+                <h2 class="text-xl font-bold text-gray-700 mb-2 text-center">Misterios del Rosario por Día</h2>
+                <ul class="text-gray-600 space-y-2 text-sm">
+                    <li>**Lunes y Sábado:** Misterios Gozosos</li>
+                    <li>**Martes y Viernes:** Misterios Dolorosos</li>
+                    <li>**Miércoles y Domingo:** Misterios Gloriosos</li>
+                    <li>**Jueves:** Misterios Luminosos</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Contenedores para el misterio y la oración actual (ocultos al inicio) -->
+        <div id="prayer-screen" class="min-h-[100px] flex flex-col justify-center items-center w-full hidden">
+            <p id="current-mystery-title" class="text-xl font-bold text-blue-800 mb-2"></p>
+            <p id="current-mystery-description" class="text-sm italic text-gray-600 mb-4"></p>
+            <p id="current-prayer-text" class="text-2xl font-semibold text-gray-700 mb-4"></p>
+        </div>
+
+        <!-- Indicador del progreso (oculto al inicio) -->
+        <div id="progress-container" class="w-full hidden">
+            <div class="w-full h-2 bg-blue-100 rounded-full mb-6">
+                <div id="progress-bar" class="h-full bg-blue-600 rounded-full transition-all duration-300 ease-in-out" style="width: 0%;"></div>
+            </div>
+            <p id="counter" class="text-lg font-bold text-blue-600 mb-6"></p>
+        </div>
+
+        <!-- Botones de control -->
+        <div id="controls" class="flex flex-col space-y-4 w-full hidden">
+            <button id="auto-mode-button" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300">
+                Modo Automático: Rezar Misterio Completo
+            </button>
+            <div id="in-progress-controls" class="w-full flex flex-col space-y-4 hidden">
+                <button id="stop-continue-button" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-red-300">
+                    Detener
+                </button>
+                <button id="reset-button" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-gray-300">
+                    Reiniciar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Definición de los misterios del Rosario por día de la semana
+        const mysteries = {
+            sunday: { name: "Misterios Gloriosos", mysteries: ["La Resurrección de Jesús", "La Ascensión de Jesús", "La Venida del Espíritu Santo", "La Asunción de María", "La Coronación de María como Reina"] },
+            monday: { name: "Misterios Gozosos", mysteries: ["La Anunciación", "La Visitación", "El Nacimiento de Jesús", "La Presentación de Jesús en el Templo", "El Niño Perdido y Hallado en el Templo"] },
+            tuesday: { name: "Misterios Dolorosos", mysteries: ["La Agonía de Jesús en el Huerto", "La Flagelación de Jesús", "La Coronación de Espinas", "Jesús con la Cruz a Cuestas", "La Crucifixión y Muerte de Jesús"] },
+            wednesday: { name: "Misterios Gloriosos", mysteries: ["La Resurrección de Jesús", "La Ascensión de Jesús", "La Venida del Espíritu Santo", "La Asunción de María", "La Coronación de María como Reina"] },
+            thursday: { name: "Misterios Luminosos", mysteries: ["El Bautismo de Jesús", "La Autorrevelación de Jesús en las Bodas de Caná", "El Anuncio del Reino de Dios", "La Transfiguración de Jesús", "La Institución de la Eucaristía"] },
+            friday: { name: "Misterios Dolorosos", mysteries: ["La Agonía de Jesús en el Huerto", "La Flagelación de Jesús", "La Coronación de Espinas", "Jesús con la Cruz a Cuestas", "La Crucifixión y Muerte de Jesús"] },
+            saturday: { name: "Misterios Gozosos", mysteries: ["La Anunciación", "La Visitación", "El Nacimiento de Jesús", "La Presentación de Jesús en el Templo", "El Niño Perdido y Hallado en el Templo"] }
+        };
+
+        // Oraciones y su estructura, ahora con el texto completo
+        const prayers = [
+            { name: "La Señal de la Cruz", text: "En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén.", type: "start" },
+            { name: "El Credo de los Apóstoles", text: "Creo en Dios, Padre Todopoderoso, Creador del cielo y de la tierra.\n\nCreo en Jesucristo, su único Hijo, Señor nuestro, que fue concebido por obra y gracia del Espíritu Santo, nació de Santa María Virgen; padeció bajo el poder de Poncio Pilato, fue crucificado, muerto y sepultado, descendió a los infiernos; al tercer día resucitó de entre los muertos; subió a los cielos y está sentado a la derecha de Dios Padre; desde allí ha de venir a juzgar a vivos y muertos.\n\nCreo en el Espíritu Santo, la Santa Iglesia Católica, la comunión de los santos, el perdón de los pecados, la resurrección de la carne y la vida eterna. Amén.", type: "intro" },
+            { name: "Padre Nuestro", text: "Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada día; perdona nuestras ofensas, como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación, y líbranos del mal. Amén.", type: "intro" },
+            { name: "Ave María", text: "Dios te salve, María, llena eres de gracia; el Señor es contigo; bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.", count: 3, type: "intro" },
+            { name: "Gloria al Padre", text: "Gloria al Padre, y al Hijo, y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.", type: "intro" },
+            { name: "Oración de Fátima", text: "Oh Jesús mío, perdona nuestros pecados, líbranos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las más necesitadas de tu misericordia.", type: "intro" },
+            // Decadas
+            { name: "Padre Nuestro", text: "Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada día; perdona nuestras ofensas, como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación, y líbranos del mal. Amén.", type: "decade-start" },
+            { name: "Ave María", text: "Dios te salve, María, llena eres de gracia; el Señor es contigo; bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.", count: 10, type: "bead" },
+            { name: "Gloria al Padre", text: "Gloria al Padre, y al Hijo, y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.", type: "decade-end" },
+            { name: "Oración de Fátima", text: "Oh Jesús mío, perdona nuestros pecados, líbranos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las más necesitadas de tu misericordia.", type: "decade-end" },
+            { name: "Padre Nuestro", text: "Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada día; perdona nuestras ofensas, como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación, y líbranos del mal. Amén.", type: "decade-start" },
+            { name: "Ave María", text: "Dios te salve, María, llena eres de gracia; el Señor es contigo; bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.", count: 10, type: "bead" },
+            { name: "Gloria al Padre", text: "Gloria al Padre, y al Hijo, y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.", type: "decade-end" },
+            { name: "Oración de Fátima", text: "Oh Jesús mío, perdona nuestros pecados, líbranos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las más necesitadas de tu misericordia.", type: "decade-end" },
+            { name: "Padre Nuestro", text: "Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada día; perdona nuestras ofensas, como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación, y líbranos del mal. Amén.", type: "decade-start" },
+            { name: "Ave María", text: "Dios te salve, María, llena eres de gracia; el Señor es contigo; bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.", count: 10, type: "bead" },
+            { name: "Gloria al Padre", text: "Gloria al Padre, y al Hijo, y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.", type: "decade-end" },
+            { name: "Oración de Fátima", text: "Oh Jesús mío, perdona nuestros pecados, líbranos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las más necesitadas de tu misericordia.", type: "decade-end" },
+            { name: "Padre Nuestro", text: "Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada día; perdona nuestras ofensas, como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación, y líbranos del mal. Amén.", type: "decade-start" },
+            { name: "Ave María", text: "Dios te salve, María, llena eres de gracia; el Señor es contigo; bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.", count: 10, type: "bead" },
+            { name: "Gloria al Padre", text: "Gloria al Padre, y al Hijo, y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.", type: "decade-end" },
+            { name: "Oración de Fátima", text: "Oh Jesús mío, perdona nuestros pecados, líbranos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las más necesitadas de tu misericordia.", type: "decade-end" },
+            { name: "Padre Nuestro", text: "Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada día; perdona nuestras ofensas, como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación, y líbranos del mal. Amén.", type: "decade-start" },
+            { name: "Ave María", text: "Dios te salve, María, llena eres de gracia; el Señor es contigo; bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.", count: 10, type: "bead" },
+            { name: "Gloria al Padre", text: "Gloria al Padre, y al Hijo, y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.", type: "decade-end" },
+            { name: "Oración de Fátima", text: "Oh Jesús mío, perdona nuestros pecados, líbranos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las más necesitadas de tu misericordia.", type: "decade-end" },
+            // Oraciones finales
+            { name: "La Salve", text: "Dios te salve, Reina y Madre de misericordia, vida, dulzura y esperanza nuestra, Dios te salve. A Ti clamamos los desterrados hijos de Eva; a Ti suspiramos, gimiendo y llorando en este valle de lágrimas. Ea, pues, Señora, abogada nuestra, vuelve a nosotros esos tus ojos misericordiosos; y después de este destierro, muéstranos a Jesús, fruto bendito de tu vientre. ¡Oh clementísima, oh piadosa, oh dulce siempre Virgen María! Ruega por nosotros, Santa Madre de Dios, para que seamos dignos de alcanzar las promesas de Nuestro Señor Jesucristo. Amén.", type: "final" },
+            { name: "Oración Final", text: "Oh Dios, cuyo Unigénito Hijo, con su vida, muerte y resurrección nos ha merecido los premios de la salvación eterna, te rogamos nos concedas que, al meditar estos misterios del Santísimo Rosario de la Virgen María, imitemos lo que contienen y alcancemos lo que prometen. Por Cristo nuestro Señor. Amén.", type: "final" },
+            { name: "Final", text: "El Santo Rosario ha sido completado. Gracias por orar.", type: "end" }
+        ];
+
+        // Elementos del DOM
+        const startScreen = document.getElementById('start-screen');
+        const prayerScreen = document.getElementById('prayer-screen');
+        const progressContainer = document.getElementById('progress-container');
+        const controls = document.getElementById('controls');
+        const inProgressControls = document.getElementById('in-progress-controls');
+        
+        const mysteryTitleElem = document.getElementById('current-mystery-title');
+        const mysteryDescriptionElem = document.getElementById('current-mystery-description');
+        const prayerTextElem = document.getElementById('current-prayer-text');
+        const autoModeButton = document.getElementById('auto-mode-button');
+        const stopContinueButton = document.getElementById('stop-continue-button');
+        const resetButton = document.getElementById('reset-button');
+        const counterElem = document.getElementById('counter');
+        const progressBar = document.getElementById('progress-bar');
+        
+        let currentPrayerIndex = 0;
+        let currentBeadCount = 0;
+        let currentDecade = -1;
+        let currentMystery;
+        let speechActive = false;
+        
+        // Función para hablar el texto de la oración
+        function speakPrayer(text, autoAdvance = false) {
+            if (!speechActive) return;
+
+            if ('speechSynthesis' in window) {
+                const speech = new SpeechSynthesisUtterance(text);
+                speech.lang = 'es-ES';
+                speech.rate = 0.9;
+                
+                if (autoAdvance) {
+                    speech.onend = () => {
+                        if (speechActive) {
+                            nextPrayer();
+                        }
+                    };
+                }
+                
+                window.speechSynthesis.cancel();
+                window.speechSynthesis.speak(speech);
+            } else {
+                console.log('Tu navegador no soporta la API de síntesis de voz.');
+            }
+        }
+        
+        // Lógica para avanzar en las oraciones
+        function nextPrayer() {
+            const prayer = prayers[currentPrayerIndex];
+            
+            if (prayer.type === 'bead' || (prayer.type === 'intro' && prayer.count)) {
+                currentBeadCount++;
+                if (currentBeadCount < prayer.count) {
+                    updateUIAndSpeak();
+                    return;
+                }
+            }
+            
+            currentBeadCount = 0;
+            currentPrayerIndex++;
+
+            if (prayer.type === 'decade-end') {
+                currentDecade++;
+            }
+
+            updateUIAndSpeak();
+        }
+
+        // Función para actualizar la UI y hablar
+        function updateUIAndSpeak() {
+            // Si todas las oraciones han sido recitadas
+            if (currentPrayerIndex >= prayers.length) {
+                prayerTextElem.textContent = "¡Rosario completado! Gracias por orar.";
+                counterElem.textContent = "";
+                progressBar.style.width = `100%`;
+                speechActive = false;
+                autoModeButton.classList.add('hidden');
+                inProgressControls.classList.remove('hidden');
+                stopContinueButton.classList.add('hidden');
+                resetButton.classList.remove('hidden');
+                return;
+            }
+
+            const prayer = prayers[currentPrayerIndex];
+            
+            // Mostrar el misterio actual
+            if (prayer.type === 'decade-start' || prayer.type === 'bead' || prayer.type === 'decade-end') {
+                mysteryTitleElem.textContent = `${currentMystery.name}`;
+                mysteryDescriptionElem.textContent = `${currentDecade + 1}º Misterio: ${currentMystery.mysteries[currentDecade]}`;
+            } else {
+                mysteryTitleElem.textContent = "";
+                mysteryDescriptionElem.textContent = "";
+            }
+
+            // Mostrar el texto completo de la oración
+            prayerTextElem.textContent = prayer.text;
+            
+            // Actualizar el contador
+            let totalBeads = 0;
+            if (prayer.type === 'intro' && prayer.count) {
+                totalBeads = prayer.count;
+            } else if (prayer.type === 'bead') {
+                totalBeads = prayer.count;
+            }
+
+            if (totalBeads > 0) {
+                counterElem.textContent = `${currentBeadCount + 1} / ${totalBeads}`;
+                const progress = ((currentBeadCount + 1) / totalBeads) * 100;
+                progressBar.style.width = `${progress}%`;
+            } else {
+                counterElem.textContent = "";
+                progressBar.style.width = `0%`;
+            }
+
+            // Hablar la oración si el modo automático está activo
+            if (speechActive) {
+                speakPrayer(prayer.text, true);
+            }
+        }
+
+        // Función para iniciar el rezo para un día específico
+        function startPrayerForDay(day) {
+            currentMystery = mysteries[day];
+            currentPrayerIndex = 0;
+            currentBeadCount = 0;
+            currentDecade = -1;
+            
+            // Ocultar la pantalla de inicio y mostrar la de oración
+            startScreen.classList.add('hidden');
+            prayerScreen.classList.remove('hidden');
+            progressContainer.classList.remove('hidden');
+            controls.classList.remove('hidden');
+
+            // Mostrar solo el botón de inicio automático
+            autoModeButton.classList.remove('hidden');
+            inProgressControls.classList.add('hidden');
+
+            // Comenzar el rezo
+            updateUIAndSpeak();
+        }
+
+        // Función para reiniciar la aplicación y volver a la pantalla de selección de día
+        function resetApp() {
+            currentPrayerIndex = 0;
+            currentBeadCount = 0;
+            currentDecade = -1;
+            speechActive = false;
+            
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+
+            // Mostrar la pantalla de inicio y ocultar la de oración
+            startScreen.classList.remove('hidden');
+            prayerScreen.classList.add('hidden');
+            progressContainer.classList.add('hidden');
+            controls.classList.add('hidden');
+            stopContinueButton.textContent = "Detener"; // Reiniciar el texto del botón
+        }
+
+        // Manejadores de eventos para los botones de día
+        document.querySelectorAll('.day-button').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const day = event.target.dataset.day;
+                startPrayerForDay(day);
+            });
+        });
+
+        // Manejadores de eventos para los botones de control
+        // Botón "Modo Automático: Rezar Misterio Completo"
+        autoModeButton.addEventListener('click', () => {
+            if (currentPrayerIndex < prayers.length) {
+                speechActive = true;
+                autoModeButton.classList.add('hidden');
+                inProgressControls.classList.remove('hidden');
+                stopContinueButton.textContent = "Detener";
+                const prayer = prayers[currentPrayerIndex];
+                speakPrayer(prayer.text, true);
+            }
+        });
+        
+        // Botón "Detener" / "Continuar"
+        stopContinueButton.addEventListener('click', () => {
+            if (speechActive) {
+                // Detener el rezo
+                speechActive = false;
+                window.speechSynthesis.cancel();
+                stopContinueButton.textContent = "Continuar";
+            } else {
+                // Continuar el rezo
+                speechActive = true;
+                stopContinueButton.textContent = "Detener";
+                // Llama a nextPrayer para seguir desde donde se detuvo
+                nextPrayer();
+            }
+        });
+
+        // Botón "Reiniciar"
+        resetButton.addEventListener('click', resetApp);
+    </script>
+</body>
+</html>

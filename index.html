@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Santo Rosario por DÌa</title>
-    <!-- Incluye Tailwind CSS para un diseÒo moderno y responsivo -->
+    <title>Santo Rosario por D√≠a</title>
+    <!-- Incluye Tailwind CSS para un dise√±o moderno y responsivo -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,46 +16,46 @@
         }
         /* Estilo para los textos largos de las oraciones */
         #current-prayer-text {
-            white-space: pre-wrap; /* Permite saltos de lÌnea y espacios en blanco */
+            white-space: pre-wrap; /* Permite saltos de l√≠nea y espacios en blanco */
             text-align: center;
         }
     </style>
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-50">
 
-    <!-- Contenedor principal de la aplicaciÛn -->
+    <!-- Contenedor principal de la aplicaci√≥n -->
     <div class="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 w-full max-w-sm flex flex-col items-center text-center">
-        <!-- TÌtulo y imagen decorativa -->
+        <!-- T√≠tulo y imagen decorativa -->
         <h1 class="text-3xl font-bold text-blue-700 mb-2">El Santo Rosario</h1>
-        <p class="text-sm text-gray-500 font-medium mb-4">GuÌa de oraciÛn completa</p>
+        <p class="text-sm text-gray-500 font-medium mb-4">Gu√≠a de oraci√≥n completa</p>
         <div class="relative w-48 h-48 mb-6 overflow-hidden rounded-full shadow-lg">
             <img src="https://placehold.co/400x400/D0DDE7/69798C?text=Rosario" alt="Imagen de un rosario" class="w-full h-full object-cover animate-pulse-slow">
         </div>
         
-        <!-- Contenedor para la selecciÛn del dÌa y la guÌa -->
+        <!-- Contenedor para la selecci√≥n del d√≠a y la gu√≠a -->
         <div id="start-screen" class="w-full">
-            <h2 class="text-xl font-bold text-gray-700 mb-4 text-center">Selecciona un dÌa para rezar</h2>
+            <h2 class="text-xl font-bold text-gray-700 mb-4 text-center">Selecciona un d√≠a para rezar</h2>
             <div class="grid grid-cols-2 gap-4">
                 <button data-day="monday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md">Lunes</button>
                 <button data-day="tuesday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md">Martes</button>
-                <button data-day="wednesday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md">MiÈrcoles</button>
+                <button data-day="wednesday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md">Mi√©rcoles</button>
                 <button data-day="thursday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md">Jueves</button>
                 <button data-day="friday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md">Viernes</button>
-                <button data-day="saturday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md">S·bado</button>
+                <button data-day="saturday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md">S√°bado</button>
                 <button data-day="sunday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md col-span-2">Domingo</button>
             </div>
             <div id="mystery-guide" class="w-full text-left mt-6">
-                <h2 class="text-xl font-bold text-gray-700 mb-2 text-center">Misterios del Rosario por DÌa</h2>
+                <h2 class="text-xl font-bold text-gray-700 mb-2 text-center">Misterios del Rosario por D√≠a</h2>
                 <ul class="text-gray-600 space-y-2 text-sm">
-                    <li>**Lunes y S·bado:** Misterios Gozosos</li>
+                    <li>**Lunes y S√°bado:** Misterios Gozosos</li>
                     <li>**Martes y Viernes:** Misterios Dolorosos</li>
-                    <li>**MiÈrcoles y Domingo:** Misterios Gloriosos</li>
+                    <li>**Mi√©rcoles y Domingo:** Misterios Gloriosos</li>
                     <li>**Jueves:** Misterios Luminosos</li>
                 </ul>
             </div>
         </div>
         
-        <!-- Contenedores para el misterio y la oraciÛn actual (ocultos al inicio) -->
+        <!-- Contenedores para el misterio y la oraci√≥n actual (ocultos al inicio) -->
         <div id="prayer-screen" class="min-h-[100px] flex flex-col justify-center items-center w-full hidden">
             <p id="current-mystery-title" class="text-xl font-bold text-blue-800 mb-2"></p>
             <p id="current-mystery-description" class="text-sm italic text-gray-600 mb-4"></p>
@@ -73,7 +73,7 @@
         <!-- Botones de control -->
         <div id="controls" class="flex flex-col space-y-4 w-full hidden">
             <button id="auto-mode-button" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300">
-                Modo Autom·tico: Rezar Misterio Completo
+                Modo Autom√°tico: Rezar Misterio Completo
             </button>
             <div id="in-progress-controls" class="w-full flex flex-col space-y-4 hidden">
                 <button id="stop-continue-button" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-red-300">
@@ -87,49 +87,49 @@
     </div>
 
     <script>
-        // DefiniciÛn de los misterios del Rosario por dÌa de la semana
+        // Definici√≥n de los misterios del Rosario por d√≠a de la semana
         const mysteries = {
-            sunday: { name: "Misterios Gloriosos", mysteries: ["La ResurrecciÛn de Jes˙s", "La AscensiÛn de Jes˙s", "La Venida del EspÌritu Santo", "La AsunciÛn de MarÌa", "La CoronaciÛn de MarÌa como Reina"] },
-            monday: { name: "Misterios Gozosos", mysteries: ["La AnunciaciÛn", "La VisitaciÛn", "El Nacimiento de Jes˙s", "La PresentaciÛn de Jes˙s en el Templo", "El NiÒo Perdido y Hallado en el Templo"] },
-            tuesday: { name: "Misterios Dolorosos", mysteries: ["La AgonÌa de Jes˙s en el Huerto", "La FlagelaciÛn de Jes˙s", "La CoronaciÛn de Espinas", "Jes˙s con la Cruz a Cuestas", "La CrucifixiÛn y Muerte de Jes˙s"] },
-            wednesday: { name: "Misterios Gloriosos", mysteries: ["La ResurrecciÛn de Jes˙s", "La AscensiÛn de Jes˙s", "La Venida del EspÌritu Santo", "La AsunciÛn de MarÌa", "La CoronaciÛn de MarÌa como Reina"] },
-            thursday: { name: "Misterios Luminosos", mysteries: ["El Bautismo de Jes˙s", "La AutorrevelaciÛn de Jes˙s en las Bodas de Can·", "El Anuncio del Reino de Dios", "La TransfiguraciÛn de Jes˙s", "La InstituciÛn de la EucaristÌa"] },
-            friday: { name: "Misterios Dolorosos", mysteries: ["La AgonÌa de Jes˙s en el Huerto", "La FlagelaciÛn de Jes˙s", "La CoronaciÛn de Espinas", "Jes˙s con la Cruz a Cuestas", "La CrucifixiÛn y Muerte de Jes˙s"] },
-            saturday: { name: "Misterios Gozosos", mysteries: ["La AnunciaciÛn", "La VisitaciÛn", "El Nacimiento de Jes˙s", "La PresentaciÛn de Jes˙s en el Templo", "El NiÒo Perdido y Hallado en el Templo"] }
+            sunday: { name: "Misterios Gloriosos", mysteries: ["La Resurrecci√≥n de Jes√∫s", "La Ascensi√≥n de Jes√∫s", "La Venida del Esp√≠ritu Santo", "La Asunci√≥n de Mar√≠a", "La Coronaci√≥n de Mar√≠a como Reina"] },
+            monday: { name: "Misterios Gozosos", mysteries: ["La Anunciaci√≥n", "La Visitaci√≥n", "El Nacimiento de Jes√∫s", "La Presentaci√≥n de Jes√∫s en el Templo", "El Ni√±o Perdido y Hallado en el Templo"] },
+            tuesday: { name: "Misterios Dolorosos", mysteries: ["La Agon√≠a de Jes√∫s en el Huerto", "La Flagelaci√≥n de Jes√∫s", "La Coronaci√≥n de Espinas", "Jes√∫s con la Cruz a Cuestas", "La Crucifixi√≥n y Muerte de Jes√∫s"] },
+            wednesday: { name: "Misterios Gloriosos", mysteries: ["La Resurrecci√≥n de Jes√∫s", "La Ascensi√≥n de Jes√∫s", "La Venida del Esp√≠ritu Santo", "La Asunci√≥n de Mar√≠a", "La Coronaci√≥n de Mar√≠a como Reina"] },
+            thursday: { name: "Misterios Luminosos", mysteries: ["El Bautismo de Jes√∫s", "La Autorrevelaci√≥n de Jes√∫s en las Bodas de Can√°", "El Anuncio del Reino de Dios", "La Transfiguraci√≥n de Jes√∫s", "La Instituci√≥n de la Eucarist√≠a"] },
+            friday: { name: "Misterios Dolorosos", mysteries: ["La Agon√≠a de Jes√∫s en el Huerto", "La Flagelaci√≥n de Jes√∫s", "La Coronaci√≥n de Espinas", "Jes√∫s con la Cruz a Cuestas", "La Crucifixi√≥n y Muerte de Jes√∫s"] },
+            saturday: { name: "Misterios Gozosos", mysteries: ["La Anunciaci√≥n", "La Visitaci√≥n", "El Nacimiento de Jes√∫s", "La Presentaci√≥n de Jes√∫s en el Templo", "El Ni√±o Perdido y Hallado en el Templo"] }
         };
 
         // Oraciones y su estructura, ahora con el texto completo
         const prayers = [
-            { name: "La SeÒal de la Cruz", text: "En el nombre del Padre, y del Hijo, y del EspÌritu Santo. AmÈn.", type: "start" },
-            { name: "El Credo de los ApÛstoles", text: "Creo en Dios, Padre Todopoderoso, Creador del cielo y de la tierra.\n\nCreo en Jesucristo, su ˙nico Hijo, SeÒor nuestro, que fue concebido por obra y gracia del EspÌritu Santo, naciÛ de Santa MarÌa Virgen; padeciÛ bajo el poder de Poncio Pilato, fue crucificado, muerto y sepultado, descendiÛ a los infiernos; al tercer dÌa resucitÛ de entre los muertos; subiÛ a los cielos y est· sentado a la derecha de Dios Padre; desde allÌ ha de venir a juzgar a vivos y muertos.\n\nCreo en el EspÌritu Santo, la Santa Iglesia CatÛlica, la comuniÛn de los santos, el perdÛn de los pecados, la resurrecciÛn de la carne y la vida eterna. AmÈn.", type: "intro" },
-            { name: "Padre Nuestro", text: "Padre nuestro, que est·s en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; h·gase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada dÌa; perdona nuestras ofensas, como tambiÈn nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentaciÛn, y lÌbranos del mal. AmÈn.", type: "intro" },
-            { name: "Ave MarÌa", text: "Dios te salve, MarÌa, llena eres de gracia; el SeÒor es contigo; bendita t˙ eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jes˙s. Santa MarÌa, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. AmÈn.", count: 3, type: "intro" },
-            { name: "Gloria al Padre", text: "Gloria al Padre, y al Hijo, y al EspÌritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. AmÈn.", type: "intro" },
-            { name: "OraciÛn de F·tima", text: "Oh Jes˙s mÌo, perdona nuestros pecados, lÌbranos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las m·s necesitadas de tu misericordia.", type: "intro" },
+            { name: "La Se√±al de la Cruz", text: "En el nombre del Padre, y del Hijo, y del Esp√≠ritu Santo. Am√©n.", type: "start" },
+            { name: "El Credo de los Ap√≥stoles", text: "Creo en Dios, Padre Todopoderoso, Creador del cielo y de la tierra.\n\nCreo en Jesucristo, su √∫nico Hijo, Se√±or nuestro, que fue concebido por obra y gracia del Esp√≠ritu Santo, naci√≥ de Santa Mar√≠a Virgen; padeci√≥ bajo el poder de Poncio Pilato, fue crucificado, muerto y sepultado, descendi√≥ a los infiernos; al tercer d√≠a resucit√≥ de entre los muertos; subi√≥ a los cielos y est√° sentado a la derecha de Dios Padre; desde all√≠ ha de venir a juzgar a vivos y muertos.\n\nCreo en el Esp√≠ritu Santo, la Santa Iglesia Cat√≥lica, la comuni√≥n de los santos, el perd√≥n de los pecados, la resurrecci√≥n de la carne y la vida eterna. Am√©n.", type: "intro" },
+            { name: "Padre Nuestro", text: "Padre nuestro, que est√°s en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; h√°gase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada d√≠a; perdona nuestras ofensas, como tambi√©n nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentaci√≥n, y l√≠branos del mal. Am√©n.", type: "intro" },
+            { name: "Ave Mar√≠a", text: "Dios te salve, Mar√≠a, llena eres de gracia; el Se√±or es contigo; bendita t√∫ eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jes√∫s. Santa Mar√≠a, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Am√©n.", count: 3, type: "intro" },
+            { name: "Gloria al Padre", text: "Gloria al Padre, y al Hijo, y al Esp√≠ritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Am√©n.", type: "intro" },
+            { name: "Oraci√≥n de F√°tima", text: "Oh Jes√∫s m√≠o, perdona nuestros pecados, l√≠branos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las m√°s necesitadas de tu misericordia.", type: "intro" },
             // Decadas
-            { name: "Padre Nuestro", text: "Padre nuestro, que est·s en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; h·gase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada dÌa; perdona nuestras ofensas, como tambiÈn nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentaciÛn, y lÌbranos del mal. AmÈn.", type: "decade-start" },
-            { name: "Ave MarÌa", text: "Dios te salve, MarÌa, llena eres de gracia; el SeÒor es contigo; bendita t˙ eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jes˙s. Santa MarÌa, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. AmÈn.", count: 10, type: "bead" },
-            { name: "Gloria al Padre", text: "Gloria al Padre, y al Hijo, y al EspÌritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. AmÈn.", type: "decade-end" },
-            { name: "OraciÛn de F·tima", text: "Oh Jes˙s mÌo, perdona nuestros pecados, lÌbranos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las m·s necesitadas de tu misericordia.", type: "decade-end" },
-            { name: "Padre Nuestro", text: "Padre nuestro, que est·s en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; h·gase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada dÌa; perdona nuestras ofensas, como tambiÈn nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentaciÛn, y lÌbranos del mal. AmÈn.", type: "decade-start" },
-            { name: "Ave MarÌa", text: "Dios te salve, MarÌa, llena eres de gracia; el SeÒor es contigo; bendita t˙ eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jes˙s. Santa MarÌa, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. AmÈn.", count: 10, type: "bead" },
-            { name: "Gloria al Padre", text: "Gloria al Padre, y al Hijo, y al EspÌritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. AmÈn.", type: "decade-end" },
-            { name: "OraciÛn de F·tima", text: "Oh Jes˙s mÌo, perdona nuestros pecados, lÌbranos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las m·s necesitadas de tu misericordia.", type: "decade-end" },
-            { name: "Padre Nuestro", text: "Padre nuestro, que est·s en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; h·gase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada dÌa; perdona nuestras ofensas, como tambiÈn nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentaciÛn, y lÌbranos del mal. AmÈn.", type: "decade-start" },
-            { name: "Ave MarÌa", text: "Dios te salve, MarÌa, llena eres de gracia; el SeÒor es contigo; bendita t˙ eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jes˙s. Santa MarÌa, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. AmÈn.", count: 10, type: "bead" },
-            { name: "Gloria al Padre", text: "Gloria al Padre, y al Hijo, y al EspÌritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. AmÈn.", type: "decade-end" },
-            { name: "OraciÛn de F·tima", text: "Oh Jes˙s mÌo, perdona nuestros pecados, lÌbranos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las m·s necesitadas de tu misericordia.", type: "decade-end" },
-            { name: "Padre Nuestro", text: "Padre nuestro, que est·s en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; h·gase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada dÌa; perdona nuestras ofensas, como tambiÈn nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentaciÛn, y lÌbranos del mal. AmÈn.", type: "decade-start" },
-            { name: "Ave MarÌa", text: "Dios te salve, MarÌa, llena eres de gracia; el SeÒor es contigo; bendita t˙ eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jes˙s. Santa MarÌa, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. AmÈn.", count: 10, type: "bead" },
-            { name: "Gloria al Padre", text: "Gloria al Padre, y al Hijo, y al EspÌritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. AmÈn.", type: "decade-end" },
-            { name: "OraciÛn de F·tima", text: "Oh Jes˙s mÌo, perdona nuestros pecados, lÌbranos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las m·s necesitadas de tu misericordia.", type: "decade-end" },
-            { name: "Padre Nuestro", text: "Padre nuestro, que est·s en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; h·gase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada dÌa; perdona nuestras ofensas, como tambiÈn nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentaciÛn, y lÌbranos del mal. AmÈn.", type: "decade-start" },
-            { name: "Ave MarÌa", text: "Dios te salve, MarÌa, llena eres de gracia; el SeÒor es contigo; bendita t˙ eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jes˙s. Santa MarÌa, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. AmÈn.", count: 10, type: "bead" },
-            { name: "Gloria al Padre", text: "Gloria al Padre, y al Hijo, y al EspÌritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. AmÈn.", type: "decade-end" },
-            { name: "OraciÛn de F·tima", text: "Oh Jes˙s mÌo, perdona nuestros pecados, lÌbranos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las m·s necesitadas de tu misericordia.", type: "decade-end" },
+            { name: "Padre Nuestro", text: "Padre nuestro, que est√°s en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; h√°gase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada d√≠a; perdona nuestras ofensas, como tambi√©n nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentaci√≥n, y l√≠branos del mal. Am√©n.", type: "decade-start" },
+            { name: "Ave Mar√≠a", text: "Dios te salve, Mar√≠a, llena eres de gracia; el Se√±or es contigo; bendita t√∫ eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jes√∫s. Santa Mar√≠a, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Am√©n.", count: 10, type: "bead" },
+            { name: "Gloria al Padre", text: "Gloria al Padre, y al Hijo, y al Esp√≠ritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Am√©n.", type: "decade-end" },
+            { name: "Oraci√≥n de F√°tima", text: "Oh Jes√∫s m√≠o, perdona nuestros pecados, l√≠branos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las m√°s necesitadas de tu misericordia.", type: "decade-end" },
+            { name: "Padre Nuestro", text: "Padre nuestro, que est√°s en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; h√°gase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada d√≠a; perdona nuestras ofensas, como tambi√©n nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentaci√≥n, y l√≠branos del mal. Am√©n.", type: "decade-start" },
+            { name: "Ave Mar√≠a", text: "Dios te salve, Mar√≠a, llena eres de gracia; el Se√±or es contigo; bendita t√∫ eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jes√∫s. Santa Mar√≠a, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Am√©n.", count: 10, type: "bead" },
+            { name: "Gloria al Padre", text: "Gloria al Padre, y al Hijo, y al Esp√≠ritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Am√©n.", type: "decade-end" },
+            { name: "Oraci√≥n de F√°tima", text: "Oh Jes√∫s m√≠o, perdona nuestros pecados, l√≠branos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las m√°s necesitadas de tu misericordia.", type: "decade-end" },
+            { name: "Padre Nuestro", text: "Padre nuestro, que est√°s en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; h√°gase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada d√≠a; perdona nuestras ofensas, como tambi√©n nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentaci√≥n, y l√≠branos del mal. Am√©n.", type: "decade-start" },
+            { name: "Ave Mar√≠a", text: "Dios te salve, Mar√≠a, llena eres de gracia; el Se√±or es contigo; bendita t√∫ eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jes√∫s. Santa Mar√≠a, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Am√©n.", count: 10, type: "bead" },
+            { name: "Gloria al Padre", text: "Gloria al Padre, y al Hijo, y al Esp√≠ritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Am√©n.", type: "decade-end" },
+            { name: "Oraci√≥n de F√°tima", text: "Oh Jes√∫s m√≠o, perdona nuestros pecados, l√≠branos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las m√°s necesitadas de tu misericordia.", type: "decade-end" },
+            { name: "Padre Nuestro", text: "Padre nuestro, que est√°s en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; h√°gase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada d√≠a; perdona nuestras ofensas, como tambi√©n nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentaci√≥n, y l√≠branos del mal. Am√©n.", type: "decade-start" },
+            { name: "Ave Mar√≠a", text: "Dios te salve, Mar√≠a, llena eres de gracia; el Se√±or es contigo; bendita t√∫ eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jes√∫s. Santa Mar√≠a, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Am√©n.", count: 10, type: "bead" },
+            { name: "Gloria al Padre", text: "Gloria al Padre, y al Hijo, y al Esp√≠ritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Am√©n.", type: "decade-end" },
+            { name: "Oraci√≥n de F√°tima", text: "Oh Jes√∫s m√≠o, perdona nuestros pecados, l√≠branos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las m√°s necesitadas de tu misericordia.", type: "decade-end" },
+            { name: "Padre Nuestro", text: "Padre nuestro, que est√°s en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; h√°gase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada d√≠a; perdona nuestras ofensas, como tambi√©n nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentaci√≥n, y l√≠branos del mal. Am√©n.", type: "decade-start" },
+            { name: "Ave Mar√≠a", text: "Dios te salve, Mar√≠a, llena eres de gracia; el Se√±or es contigo; bendita t√∫ eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jes√∫s. Santa Mar√≠a, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Am√©n.", count: 10, type: "bead" },
+            { name: "Gloria al Padre", text: "Gloria al Padre, y al Hijo, y al Esp√≠ritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Am√©n.", type: "decade-end" },
+            { name: "Oraci√≥n de F√°tima", text: "Oh Jes√∫s m√≠o, perdona nuestros pecados, l√≠branos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las m√°s necesitadas de tu misericordia.", type: "decade-end" },
             // Oraciones finales
-            { name: "La Salve", text: "Dios te salve, Reina y Madre de misericordia, vida, dulzura y esperanza nuestra, Dios te salve. A Ti clamamos los desterrados hijos de Eva; a Ti suspiramos, gimiendo y llorando en este valle de l·grimas. Ea, pues, SeÒora, abogada nuestra, vuelve a nosotros esos tus ojos misericordiosos; y despuÈs de este destierro, muÈstranos a Jes˙s, fruto bendito de tu vientre. °Oh clementÌsima, oh piadosa, oh dulce siempre Virgen MarÌa! Ruega por nosotros, Santa Madre de Dios, para que seamos dignos de alcanzar las promesas de Nuestro SeÒor Jesucristo. AmÈn.", type: "final" },
-            { name: "OraciÛn Final", text: "Oh Dios, cuyo UnigÈnito Hijo, con su vida, muerte y resurrecciÛn nos ha merecido los premios de la salvaciÛn eterna, te rogamos nos concedas que, al meditar estos misterios del SantÌsimo Rosario de la Virgen MarÌa, imitemos lo que contienen y alcancemos lo que prometen. Por Cristo nuestro SeÒor. AmÈn.", type: "final" },
+            { name: "La Salve", text: "Dios te salve, Reina y Madre de misericordia, vida, dulzura y esperanza nuestra, Dios te salve. A Ti clamamos los desterrados hijos de Eva; a Ti suspiramos, gimiendo y llorando en este valle de l√°grimas. Ea, pues, Se√±ora, abogada nuestra, vuelve a nosotros esos tus ojos misericordiosos; y despu√©s de este destierro, mu√©stranos a Jes√∫s, fruto bendito de tu vientre. ¬°Oh clement√≠sima, oh piadosa, oh dulce siempre Virgen Mar√≠a! Ruega por nosotros, Santa Madre de Dios, para que seamos dignos de alcanzar las promesas de Nuestro Se√±or Jesucristo. Am√©n.", type: "final" },
+            { name: "Oraci√≥n Final", text: "Oh Dios, cuyo Unig√©nito Hijo, con su vida, muerte y resurrecci√≥n nos ha merecido los premios de la salvaci√≥n eterna, te rogamos nos concedas que, al meditar estos misterios del Sant√≠simo Rosario de la Virgen Mar√≠a, imitemos lo que contienen y alcancemos lo que prometen. Por Cristo nuestro Se√±or. Am√©n.", type: "final" },
             { name: "Final", text: "El Santo Rosario ha sido completado. Gracias por orar.", type: "end" }
         ];
 
@@ -155,7 +155,7 @@
         let currentMystery;
         let speechActive = false;
         
-        // FunciÛn para hablar el texto de la oraciÛn
+        // Funci√≥n para hablar el texto de la oraci√≥n
         function speakPrayer(text, autoAdvance = false) {
             if (!speechActive) return;
 
@@ -175,11 +175,11 @@
                 window.speechSynthesis.cancel();
                 window.speechSynthesis.speak(speech);
             } else {
-                console.log('Tu navegador no soporta la API de sÌntesis de voz.');
+                console.log('Tu navegador no soporta la API de s√≠ntesis de voz.');
             }
         }
         
-        // LÛgica para avanzar en las oraciones
+        // L√≥gica para avanzar en las oraciones
         function nextPrayer() {
             const prayer = prayers[currentPrayerIndex];
             
@@ -201,11 +201,11 @@
             updateUIAndSpeak();
         }
 
-        // FunciÛn para actualizar la UI y hablar
+        // Funci√≥n para actualizar la UI y hablar
         function updateUIAndSpeak() {
             // Si todas las oraciones han sido recitadas
             if (currentPrayerIndex >= prayers.length) {
-                prayerTextElem.textContent = "°Rosario completado! Gracias por orar.";
+                prayerTextElem.textContent = "¬°Rosario completado! Gracias por orar.";
                 counterElem.textContent = "";
                 progressBar.style.width = `100%`;
                 speechActive = false;
@@ -221,13 +221,13 @@
             // Mostrar el misterio actual
             if (prayer.type === 'decade-start' || prayer.type === 'bead' || prayer.type === 'decade-end') {
                 mysteryTitleElem.textContent = `${currentMystery.name}`;
-                mysteryDescriptionElem.textContent = `${currentDecade + 1}∫ Misterio: ${currentMystery.mysteries[currentDecade]}`;
+                mysteryDescriptionElem.textContent = `${currentDecade + 1}¬∫ Misterio: ${currentMystery.mysteries[currentDecade]}`;
             } else {
                 mysteryTitleElem.textContent = "";
                 mysteryDescriptionElem.textContent = "";
             }
 
-            // Mostrar el texto completo de la oraciÛn
+            // Mostrar el texto completo de la oraci√≥n
             prayerTextElem.textContent = prayer.text;
             
             // Actualizar el contador
@@ -247,26 +247,26 @@
                 progressBar.style.width = `0%`;
             }
 
-            // Hablar la oraciÛn si el modo autom·tico est· activo
+            // Hablar la oraci√≥n si el modo autom√°tico est√° activo
             if (speechActive) {
                 speakPrayer(prayer.text, true);
             }
         }
 
-        // FunciÛn para iniciar el rezo para un dÌa especÌfico
+        // Funci√≥n para iniciar el rezo para un d√≠a espec√≠fico
         function startPrayerForDay(day) {
             currentMystery = mysteries[day];
             currentPrayerIndex = 0;
             currentBeadCount = 0;
             currentDecade = -1;
             
-            // Ocultar la pantalla de inicio y mostrar la de oraciÛn
+            // Ocultar la pantalla de inicio y mostrar la de oraci√≥n
             startScreen.classList.add('hidden');
             prayerScreen.classList.remove('hidden');
             progressContainer.classList.remove('hidden');
             controls.classList.remove('hidden');
 
-            // Mostrar solo el botÛn de inicio autom·tico
+            // Mostrar solo el bot√≥n de inicio autom√°tico
             autoModeButton.classList.remove('hidden');
             inProgressControls.classList.add('hidden');
 
@@ -274,7 +274,7 @@
             updateUIAndSpeak();
         }
 
-        // FunciÛn para reiniciar la aplicaciÛn y volver a la pantalla de selecciÛn de dÌa
+        // Funci√≥n para reiniciar la aplicaci√≥n y volver a la pantalla de selecci√≥n de d√≠a
         function resetApp() {
             currentPrayerIndex = 0;
             currentBeadCount = 0;
@@ -285,15 +285,15 @@
                 window.speechSynthesis.cancel();
             }
 
-            // Mostrar la pantalla de inicio y ocultar la de oraciÛn
+            // Mostrar la pantalla de inicio y ocultar la de oraci√≥n
             startScreen.classList.remove('hidden');
             prayerScreen.classList.add('hidden');
             progressContainer.classList.add('hidden');
             controls.classList.add('hidden');
-            stopContinueButton.textContent = "Detener"; // Reiniciar el texto del botÛn
+            stopContinueButton.textContent = "Detener"; // Reiniciar el texto del bot√≥n
         }
 
-        // Manejadores de eventos para los botones de dÌa
+        // Manejadores de eventos para los botones de d√≠a
         document.querySelectorAll('.day-button').forEach(button => {
             button.addEventListener('click', (event) => {
                 const day = event.target.dataset.day;
@@ -302,7 +302,7 @@
         });
 
         // Manejadores de eventos para los botones de control
-        // BotÛn "Modo Autom·tico: Rezar Misterio Completo"
+        // Bot√≥n "Modo Autom√°tico: Rezar Misterio Completo"
         autoModeButton.addEventListener('click', () => {
             if (currentPrayerIndex < prayers.length) {
                 speechActive = true;
@@ -314,7 +314,7 @@
             }
         });
         
-        // BotÛn "Detener" / "Continuar"
+        // Bot√≥n "Detener" / "Continuar"
         stopContinueButton.addEventListener('click', () => {
             if (speechActive) {
                 // Detener el rezo
@@ -330,7 +330,7 @@
             }
         });
 
-        // BotÛn "Reiniciar"
+        // Bot√≥n "Reiniciar"
         resetButton.addEventListener('click', resetApp);
     </script>
 </body>

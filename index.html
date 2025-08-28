@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Santo Rosario por Día</title>
+    <title>Oración del Ángelus y Rosario</title>
     <!-- Incluye Tailwind CSS para un diseño moderno y responsivo -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,16 +26,19 @@
     <!-- Contenedor principal de la aplicación -->
     <div class="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 w-full max-w-sm flex flex-col items-center text-center">
         <!-- Título y imagen decorativa -->
-        <h1 class="text-3xl font-bold text-blue-700 mb-2">El Santo Rosario</h1>
-        <p class="text-sm text-gray-500 font-medium mb-4">Reza con Luis</p>
+        <h1 id="main-title" class="text-3xl font-bold text-blue-700 mb-2">El Santo Rosario</h1>
+        <p class="text-sm text-gray-500 font-medium mb-4">Guía de oración completa</p>
         <div class="relative w-48 h-48 mb-6 overflow-hidden rounded-full shadow-lg">
-            <img src="https://placehold.co/400x400/D0DDE7/69798C?text=Comun.3, SFA PP" alt="Imagen de un rosario" class="w-full h-full object-cover animate-pulse-slow">
+            <img src="https://placehold.co/400x400/D0DDE7/69798C?text=Oración" alt="Imagen de un rosario" class="w-full h-full object-cover animate-pulse-slow">
         </div>
         
         <!-- Contenedor para la selección del día y la guía -->
         <div id="start-screen" class="w-full">
-            <h2 class="text-xl font-bold text-gray-700 mb-4 text-center">Selecciona un día para rezar</h2>
+            <h2 class="text-xl font-bold text-gray-700 mb-4 text-center">Selecciona una oración</h2>
             <div class="grid grid-cols-2 gap-4">
+                <button id="angelus-button" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md col-span-2">El Ángelus</button>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mt-4">
                 <button data-day="monday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md">Lunes</button>
                 <button data-day="tuesday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md">Martes</button>
                 <button data-day="wednesday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md">Miércoles</button>
@@ -47,15 +50,15 @@
             <div id="mystery-guide" class="w-full text-left mt-6">
                 <h2 class="text-xl font-bold text-gray-700 mb-2 text-center">Misterios del Rosario por Día</h2>
                 <ul class="text-gray-600 space-y-2 text-sm">
-                    <li>Lunes y Sábado: Misterios Gozosos</li>
-                    <li> Martes y Viernes: Misterios Dolorosos</li>
-                    <li> Miércoles y Domingo: Misterios Gloriosos</li>
-                    <li> Jueves: Misterios Luminosos</li>
+                    <li>**Lunes y Sábado:** Misterios Gozosos</li>
+                    <li>**Martes y Viernes:** Misterios Dolorosos</li>
+                    <li>**Miércoles y Domingo:** Misterios Gloriosos</li>
+                    <li>**Jueves:** Misterios Luminosos</li>
                 </ul>
             </div>
         </div>
         
-        <!-- Contenedores para el misterio y la oración actual (ocultos al inicio) -->
+        <!-- Contenedores para la oración actual (ocultos al inicio) -->
         <div id="prayer-screen" class="min-h-[100px] flex flex-col justify-center items-center w-full hidden">
             <p id="current-mystery-title" class="text-xl font-bold text-blue-800 mb-2"></p>
             <p id="current-mystery-description" class="text-sm italic text-gray-600 mb-4"></p>
@@ -73,7 +76,7 @@
         <!-- Botones de control -->
         <div id="controls" class="flex flex-col space-y-4 w-full hidden">
             <button id="auto-mode-button" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300">
-                Modo Automático: Rezar Misterio Completo
+                Modo Automático: Rezar Completo
             </button>
             <div id="in-progress-controls" class="w-full flex flex-col space-y-4 hidden">
                 <button id="stop-continue-button" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-red-300">
@@ -98,8 +101,8 @@
             saturday: { name: "Misterios Gozosos", mysteries: ["La Anunciación", "La Visitación", "El Nacimiento de Jesús", "La Presentación de Jesús en el Templo", "El Niño Perdido y Hallado en el Templo"] }
         };
 
-        // Oraciones y su estructura, ahora con el texto completo
-        const prayers = [
+        // Oraciones del Rosario y su estructura, ahora con el texto completo
+        const rosaryPrayers = [
             { name: "La Señal de la Cruz", text: "En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén.", type: "start" },
             { name: "El Credo de los Apóstoles", text: "Creo en Dios, Padre Todopoderoso, Creador del cielo y de la tierra.\n\nCreo en Jesucristo, su único Hijo, Señor nuestro, que fue concebido por obra y gracia del Espíritu Santo, nació de Santa María Virgen; padeció bajo el poder de Poncio Pilato, fue crucificado, muerto y sepultado, descendió a los infiernos; al tercer día resucitó de entre los muertos; subió a los cielos y está sentado a la derecha de Dios Padre; desde allí ha de venir a juzgar a vivos y muertos.\n\nCreo en el Espíritu Santo, la Santa Iglesia Católica, la comunión de los santos, el perdón de los pecados, la resurrección de la carne y la vida eterna. Amén.", type: "intro" },
             { name: "Padre Nuestro", text: "Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada día; perdona nuestras ofensas, como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación, y líbranos del mal. Amén.", type: "intro" },
@@ -133,12 +136,29 @@
             { name: "Final", text: "El Santo Rosario ha sido completado. Gracias por orar.", type: "end" }
         ];
 
+        // Oraciones del Ángelus y su estructura
+        const angelusPrayers = [
+            { name: "El Ángelus", text: "V. El Ángel del Señor anunció a María.\nR. Y ella concibió por obra del Espíritu Santo.", type: "angelus" },
+            { name: "El Ángelus", text: "Dios te salve, María, llena eres de gracia; el Señor es contigo; bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.", type: "angelus-ave-maria" },
+            { name: "El Ángelus", text: "V. He aquí la esclava del Señor.\nR. Hágase en mí según tu palabra.", type: "angelus" },
+            { name: "El Ángelus", text: "Dios te salve, María, llena eres de gracia; el Señor es contigo; bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.", type: "angelus-ave-maria" },
+            { name: "El Ángelus", text: "V. Y el Verbo de Dios se hizo carne.\nR. Y habitó entre nosotros.", type: "angelus" },
+            { name: "El Ángelus", text: "Dios te salve, María, llena eres de gracia; el Señor es contigo; bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.", type: "angelus-ave-maria" },
+            { name: "El Ángelus", text: "V. Ruega por nosotros, Santa Madre de Dios.\nR. Para que seamos dignos de alcanzar las promesas de Cristo.", type: "angelus" },
+            { name: "El Ángelus", text: "Oremos:\n\nDerrama, Señor, tu gracia sobre nosotros, que, por el anuncio del Ángel, hemos conocido la encarnación de tu Hijo, para que, por su pasión y su cruz, lleguemos a la gloria de la resurrección. Por Cristo nuestro Señor. Amén.", type: "angelus-final" },
+            { name: "El Ángelus", text: "Gloria al Padre, y al Hijo, y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén. (x3)", type: "angelus-end" },
+            { name: "Final", text: "El Ángelus ha sido completado. Gracias por orar.", type: "end" }
+        ];
+
+
         // Elementos del DOM
+        const mainTitleElem = document.getElementById('main-title');
         const startScreen = document.getElementById('start-screen');
         const prayerScreen = document.getElementById('prayer-screen');
         const progressContainer = document.getElementById('progress-container');
         const controls = document.getElementById('controls');
         const inProgressControls = document.getElementById('in-progress-controls');
+        const mysteryGuide = document.getElementById('mystery-guide');
         
         const mysteryTitleElem = document.getElementById('current-mystery-title');
         const mysteryDescriptionElem = document.getElementById('current-mystery-description');
@@ -154,6 +174,8 @@
         let currentDecade = -1;
         let currentMystery;
         let speechActive = false;
+        let isAngelusMode = false;
+        let currentPrayerList;
         
         // Función para hablar el texto de la oración
         function speakPrayer(text, autoAdvance = false) {
@@ -181,7 +203,7 @@
         
         // Lógica para avanzar en las oraciones
         function nextPrayer() {
-            const prayer = prayers[currentPrayerIndex];
+            const prayer = currentPrayerList[currentPrayerIndex];
             
             if (prayer.type === 'bead' || (prayer.type === 'intro' && prayer.count)) {
                 currentBeadCount++;
@@ -204,8 +226,8 @@
         // Función para actualizar la UI y hablar
         function updateUIAndSpeak() {
             // Si todas las oraciones han sido recitadas
-            if (currentPrayerIndex >= prayers.length) {
-                prayerTextElem.textContent = "¡Rosario completado! Gracias por orar.";
+            if (currentPrayerIndex >= currentPrayerList.length) {
+                prayerTextElem.textContent = isAngelusMode ? "¡Ángelus completado! Gracias por orar." : "¡Rosario completado! Gracias por orar.";
                 counterElem.textContent = "";
                 progressBar.style.width = `100%`;
                 speechActive = false;
@@ -216,10 +238,10 @@
                 return;
             }
 
-            const prayer = prayers[currentPrayerIndex];
+            const prayer = currentPrayerList[currentPrayerIndex];
             
-            // Mostrar el misterio actual
-            if (prayer.type === 'decade-start' || prayer.type === 'bead' || prayer.type === 'decade-end') {
+            // Mostrar el misterio actual si es modo rosario
+            if (!isAngelusMode && (prayer.type === 'decade-start' || prayer.type === 'bead' || prayer.type === 'decade-end')) {
                 mysteryTitleElem.textContent = `${currentMystery.name}`;
                 mysteryDescriptionElem.textContent = `${currentDecade + 1}º Misterio: ${currentMystery.mysteries[currentDecade]}`;
             } else {
@@ -230,21 +252,27 @@
             // Mostrar el texto completo de la oración
             prayerTextElem.textContent = prayer.text;
             
-            // Actualizar el contador
-            let totalBeads = 0;
-            if (prayer.type === 'intro' && prayer.count) {
-                totalBeads = prayer.count;
-            } else if (prayer.type === 'bead') {
-                totalBeads = prayer.count;
-            }
+            // Actualizar el contador si es modo rosario
+            if (!isAngelusMode) {
+                let totalBeads = 0;
+                if (prayer.type === 'intro' && prayer.count) {
+                    totalBeads = prayer.count;
+                } else if (prayer.type === 'bead') {
+                    totalBeads = prayer.count;
+                }
 
-            if (totalBeads > 0) {
-                counterElem.textContent = `${currentBeadCount + 1} / ${totalBeads}`;
-                const progress = ((currentBeadCount + 1) / totalBeads) * 100;
-                progressBar.style.width = `${progress}%`;
+                if (totalBeads > 0) {
+                    counterElem.textContent = `${currentBeadCount + 1} / ${totalBeads}`;
+                    const progress = ((currentBeadCount + 1) / totalBeads) * 100;
+                    progressBar.style.width = `${progress}%`;
+                    progressContainer.classList.remove('hidden');
+                } else {
+                    counterElem.textContent = "";
+                    progressBar.style.width = `0%`;
+                    progressContainer.classList.remove('hidden');
+                }
             } else {
-                counterElem.textContent = "";
-                progressBar.style.width = `0%`;
+                progressContainer.classList.add('hidden');
             }
 
             // Hablar la oración si el modo automático está activo
@@ -255,6 +283,8 @@
 
         // Función para iniciar el rezo para un día específico
         function startPrayerForDay(day) {
+            isAngelusMode = false;
+            currentPrayerList = rosaryPrayers;
             currentMystery = mysteries[day];
             currentPrayerIndex = 0;
             currentBeadCount = 0;
@@ -265,10 +295,39 @@
             prayerScreen.classList.remove('hidden');
             progressContainer.classList.remove('hidden');
             controls.classList.remove('hidden');
+            mainTitleElem.textContent = "El Santo Rosario";
 
             // Mostrar solo el botón de inicio automático
             autoModeButton.classList.remove('hidden');
             inProgressControls.classList.add('hidden');
+            autoModeButton.textContent = "Modo Automático: Rezar Misterio Completo";
+
+            // Comenzar el rezo
+            updateUIAndSpeak();
+        }
+
+        // Función para iniciar la oración del Ángelus
+        function startAngelusPrayer() {
+            isAngelusMode = true;
+            currentPrayerList = angelusPrayers;
+            currentMystery = null; // No hay misterio en el Ángelus
+            currentPrayerIndex = 0;
+            currentBeadCount = 0;
+            currentDecade = -1;
+            
+            // Ocultar la pantalla de inicio y mostrar la de oración
+            startScreen.classList.add('hidden');
+            prayerScreen.classList.remove('hidden');
+            progressContainer.classList.add('hidden'); // Ocultar progreso para el Ángelus
+            controls.classList.remove('hidden');
+            mysteryGuide.classList.add('hidden');
+            mainTitleElem.textContent = "El Ángelus";
+
+
+            // Mostrar solo el botón de inicio automático
+            autoModeButton.classList.remove('hidden');
+            inProgressControls.classList.add('hidden');
+            autoModeButton.textContent = "Modo Automático: Rezar Completo";
 
             // Comenzar el rezo
             updateUIAndSpeak();
@@ -280,6 +339,7 @@
             currentBeadCount = 0;
             currentDecade = -1;
             speechActive = false;
+            isAngelusMode = false;
             
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
@@ -290,26 +350,31 @@
             prayerScreen.classList.add('hidden');
             progressContainer.classList.add('hidden');
             controls.classList.add('hidden');
+            mysteryGuide.classList.remove('hidden');
             stopContinueButton.textContent = "Detener"; // Reiniciar el texto del botón
+            mainTitleElem.textContent = "El Santo Rosario";
         }
 
-        // Manejadores de eventos para los botones de día
+        // Manejadores de eventos para los botones de día y Ángelus
         document.querySelectorAll('.day-button').forEach(button => {
             button.addEventListener('click', (event) => {
                 const day = event.target.dataset.day;
-                startPrayerForDay(day);
+                if (day) {
+                    startPrayerForDay(day);
+                }
             });
         });
+        document.getElementById('angelus-button').addEventListener('click', startAngelusPrayer);
 
         // Manejadores de eventos para los botones de control
-        // Botón "Modo Automático: Rezar Misterio Completo"
+        // Botón "Modo Automático: Rezar Completo"
         autoModeButton.addEventListener('click', () => {
-            if (currentPrayerIndex < prayers.length) {
+            if (currentPrayerIndex < currentPrayerList.length) {
                 speechActive = true;
                 autoModeButton.classList.add('hidden');
                 inProgressControls.classList.remove('hidden');
                 stopContinueButton.textContent = "Detener";
-                const prayer = prayers[currentPrayerIndex];
+                const prayer = currentPrayerList[currentPrayerIndex];
                 speakPrayer(prayer.text, true);
             }
         });
@@ -334,7 +399,5 @@
         resetButton.addEventListener('click', resetApp);
     </script>
 </body>
-
 </html>
-
 

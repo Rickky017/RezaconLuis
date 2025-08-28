@@ -29,7 +29,8 @@
         <h1 id="main-title" class="text-3xl font-bold text-blue-700 mb-2">El Santo Rosario</h1>
         <p class="text-sm text-gray-500 font-medium mb-4">Guía de oración completa</p>
         <div class="relative w-48 h-48 mb-6 overflow-hidden rounded-full shadow-lg">
-            <img src="https://placehold.co/400x400/D0DDE7/69798C?text=Oración" alt="Imagen de un rosario" class="w-full h-full object-cover animate-pulse-slow">
+            <!-- Texto de la imagen de fondo cambiado a "Reza con Luis" -->
+            <img src="https://placehold.co/400x400/D0DDE7/69798C?text=Reza+con+Luis" alt="Imagen de un rosario" class="w-full h-full object-cover animate-pulse-slow">
         </div>
         
         <!-- Contenedor para la selección del día y la guía -->
@@ -50,10 +51,11 @@
             <div id="mystery-guide" class="w-full text-left mt-6">
                 <h2 class="text-xl font-bold text-gray-700 mb-2 text-center">Misterios del Rosario por Día</h2>
                 <ul class="text-gray-600 space-y-2 text-sm">
-                    <li>**Lunes y Sábado:** Misterios Gozosos</li>
-                    <li>**Martes y Viernes:** Misterios Dolorosos</li>
-                    <li>**Miércoles y Domingo:** Misterios Gloriosos</li>
-                    <li>**Jueves:** Misterios Luminosos</li>
+                    <!-- Eliminados los asteriscos de los días de la semana -->
+                    <li>Lunes y Sábado: Misterios Gozosos</li>
+                    <li>Martes y Viernes: Misterios Dolorosos</li>
+                    <li>Miércoles y Domingo: Misterios Gloriosos</li>
+                    <li>Jueves: Misterios Luminosos</li>
                 </ul>
             </div>
         </div>
@@ -63,6 +65,8 @@
             <p id="current-mystery-title" class="text-xl font-bold text-blue-800 mb-2"></p>
             <p id="current-mystery-description" class="text-sm italic text-gray-600 mb-4"></p>
             <p id="current-prayer-text" class="text-2xl font-semibold text-gray-700 mb-4"></p>
+            <!-- Nuevo elemento para el texto de la estación del Via Crucis -->
+            <p id="station-text" class="text-base text-gray-500 mt-2 mb-4 hidden"></p>
         </div>
 
         <!-- Indicador del progreso (oculto al inicio) -->
@@ -101,6 +105,24 @@
             saturday: { name: "Misterios Gozosos", mysteries: ["La Anunciación", "La Visitación", "El Nacimiento de Jesús", "La Presentación de Jesús en el Templo", "El Niño Perdido y Hallado en el Templo"] }
         };
 
+        // Estaciones del Vía Crucis para los Misterios Dolorosos
+        const viaCrucisStations = [
+            "Jesús es sentenciado a muerte",
+            "Jesús carga con la Cruz",
+            "Jesús cae por primera vez",
+            "Jesús encuentra a su Santísima Madre",
+            "Simón de Cirene ayuda a Jesús a llevar la Cruz",
+            "La Verónica limpia el rostro de Jesús",
+            "Jesús cae por segunda vez",
+            "Jesús consuela a las mujeres de Jerusalén",
+            "Jesús cae por tercera vez",
+            "Jesús es despojado de sus vestiduras",
+            "Jesús es clavado en la Cruz",
+            "Jesús muere en la Cruz",
+            "Jesús es bajado de la Cruz y entregado a su Madre",
+            "Jesús es puesto en el sepulcro",
+        ];
+        
         // Oraciones del Rosario y su estructura, ahora con el texto completo
         const rosaryPrayers = [
             { name: "La Señal de la Cruz", text: "En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén.", type: "start" },
@@ -149,8 +171,7 @@
             { name: "El Ángelus", text: "Gloria al Padre, y al Hijo, y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén. (x3)", type: "angelus-end" },
             { name: "Final", text: "El Ángelus ha sido completado. Gracias por orar.", type: "end" }
         ];
-
-
+        
         // Elementos del DOM
         const mainTitleElem = document.getElementById('main-title');
         const startScreen = document.getElementById('start-screen');
@@ -163,6 +184,7 @@
         const mysteryTitleElem = document.getElementById('current-mystery-title');
         const mysteryDescriptionElem = document.getElementById('current-mystery-description');
         const prayerTextElem = document.getElementById('current-prayer-text');
+        const stationTextElem = document.getElementById('station-text');
         const autoModeButton = document.getElementById('auto-mode-button');
         const stopContinueButton = document.getElementById('stop-continue-button');
         const resetButton = document.getElementById('reset-button');
@@ -242,15 +264,34 @@
             
             // Mostrar el misterio actual si es modo rosario
             if (!isAngelusMode && (prayer.type === 'decade-start' || prayer.type === 'bead' || prayer.type === 'decade-end')) {
+                // El misterio se muestra como 1, 2, 3, etc.
                 mysteryTitleElem.textContent = `${currentMystery.name}`;
                 mysteryDescriptionElem.textContent = `${currentDecade + 1}º Misterio: ${currentMystery.mysteries[currentDecade]}`;
+                stationTextElem.classList.add('hidden'); // Ocultar el texto de la estación por defecto
+                
+                // Si es el inicio de una década y son los Misterios Dolorosos, mostrar la estación
+                if (prayer.type === 'decade-start' && currentMystery.name === "Misterios Dolorosos") {
+                    const briefStationText = `Meditamos la estación del Vía Crucis: ${viaCrucisStations[currentDecade]}.`;
+                    prayerTextElem.textContent = briefStationText + "\n\n" + prayer.text;
+                    if (speechActive) {
+                        speakPrayer(briefStationText + ". " + prayer.text, true);
+                    }
+                } else {
+                    prayerTextElem.textContent = prayer.text;
+                    if (speechActive) {
+                        speakPrayer(prayer.text, true);
+                    }
+                }
+
             } else {
                 mysteryTitleElem.textContent = "";
                 mysteryDescriptionElem.textContent = "";
+                prayerTextElem.textContent = prayer.text;
+                stationTextElem.classList.add('hidden');
+                if (speechActive) {
+                    speakPrayer(prayer.text, true);
+                }
             }
-
-            // Mostrar el texto completo de la oración
-            prayerTextElem.textContent = prayer.text;
             
             // Actualizar el contador si es modo rosario
             if (!isAngelusMode) {
@@ -273,11 +314,6 @@
                 }
             } else {
                 progressContainer.classList.add('hidden');
-            }
-
-            // Hablar la oración si el modo automático está activo
-            if (speechActive) {
-                speakPrayer(prayer.text, true);
             }
         }
 
@@ -375,7 +411,7 @@
                 inProgressControls.classList.remove('hidden');
                 stopContinueButton.textContent = "Detener";
                 const prayer = currentPrayerList[currentPrayerIndex];
-                speakPrayer(prayer.text, true);
+                updateUIAndSpeak();
             }
         });
         
@@ -400,4 +436,3 @@
     </script>
 </body>
 </html>
-

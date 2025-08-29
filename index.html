@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -50,6 +51,16 @@
                 <button data-day="saturday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md">Sábado</button>
                 <button data-day="sunday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md col-span-2">Domingo</button>
             </div>
+            <!-- Botones para el Rosario a San José y la Coronilla de la Divina Misericordia -->
+            <div class="grid grid-cols-2 gap-4 mt-4">
+                <button id="jose-rosary-button" class="day-button bg-orange-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md col-span-2">Rosario a San José</button>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mt-4">
+                 <button id="divine-mercy-button" class="day-button bg-red-600 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md col-span-2">La Coronilla de la Divina Misericordia</button>
+            </div>
+             <div class="grid grid-cols-2 gap-4 mt-4">
+                <button id="common-prayers-button" class="day-button bg-green-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md col-span-2">Oraciones Comunes</button>
+            </div>
             <div id="mystery-guide" class="w-full text-left mt-6">
                 <h2 class="text-xl font-bold text-gray-700 mb-2 text-center">Misterios del Rosario por Día</h2>
                 <ul class="text-gray-600 space-y-2 text-sm">
@@ -70,6 +81,21 @@
             <p id="current-prayer-text" class="text-2xl font-semibold text-gray-700 mb-4"></p>
             <!-- Elemento para el texto de la estación del Vía Crucis -->
             <p id="station-text" class="text-base text-gray-500 mt-2 mb-4 hidden"></p>
+        </div>
+        
+        <!-- Contenedor para el listado de oraciones comunes -->
+        <div id="common-prayers-screen" class="w-full hidden">
+            <h2 class="text-xl font-bold text-gray-700 mb-4 text-center">Oraciones Comunes</h2>
+            <div id="prayers-list" class="space-y-4 text-center"></div>
+        </div>
+        
+        <!-- Contenedor para el texto de la oración común seleccionada -->
+        <div id="single-prayer-screen" class="w-full hidden">
+            <h2 id="single-prayer-title" class="text-xl font-bold text-blue-800 mb-4 text-center"></h2>
+            <p id="single-prayer-text" class="text-base text-gray-700 mb-6 text-center"></p>
+            <button id="play-common-prayer-button" class="bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300">
+                Reproducir
+            </button>
         </div>
 
         <!-- Indicador del progreso (oculto al inicio) -->
@@ -209,6 +235,89 @@
             { name: "Final", text: "El Ángelus ha sido completado. Gracias por orar.", type: "end" }
         ];
 
+        // Oraciones para el Rosario a San José
+        const joseRosaryPrayers = [
+            { name: "La Señal de la Cruz", text: "En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén.", type: "start" },
+            { name: "Acto de Contrición", text: "Señor mío, Jesucristo, Dios y Hombre verdadero, Creador, Padre y Redentor mío, por ser Vos quien sois, Bondad infinita, y porque os amo sobre todas las cosas, me pesa de todo corazón haberos ofendido; también me pesa porque podéis castigarme con las penas del infierno. Ayudado de vuestra divina gracia, propongo firmemente nunca más pecar, confesarme y cumplir la penitencia que me fuere impuesta. Amén.", type: "intro" },
+            { name: "Invocación a San José", text: "Oh glorioso San José, tú que fuiste elegido por Dios como padre adoptivo de Jesús y esposo de María, ven en nuestra ayuda. Te encomendamos este Rosario, meditando tus virtudes, para que nos ayudes a imitar tu fe, tu humildad y tu amor a la Sagrada Familia. Amén.", type: "intro" },
+            // Primer Misterio
+            { name: "Primer Misterio: La duda de San José", text: "Meditamos cómo San José, ante la concepción virginal de María, vivió una gran tribulación y dolor, pero confió en la palabra del Ángel, aceptando su papel de protector de Jesús y María.", type: "mystery-intro", mysteryIndex: 0 },
+            { name: "Padre Nuestro", text: "Padre nuestro, que estás en el cielo, santificado sea tu Nombre...", type: "decade-start", mysteryIndex: 0 },
+            { name: "Ave José", text: "Dios te salve, José, lleno de la gracia divina, entre tus brazos el Señor reposó, y en tu corazón Él nació. Bendito eres tú entre todos los hombres y bendito es el fruto de tu castidad, Jesús. San José, padre de Jesús y esposo de María, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.", count: 10, type: "bead", mysteryIndex: 0 },
+            { name: "Gloria", text: "Gloria al Padre, y al Hijo, y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.", type: "decade-end" },
+            // Segundo Misterio
+            { name: "Segundo Misterio: El nacimiento de Jesús en Belén", text: "Meditamos la obediencia de San José al dirigirse a Belén y su cuidado amoroso al ver nacer al Hijo de Dios en la pobreza de un pesebre.", type: "mystery-intro", mysteryIndex: 1 },
+            { name: "Padre Nuestro", text: "Padre nuestro, que estás en el cielo, santificado sea tu Nombre...", type: "decade-start", mysteryIndex: 1 },
+            { name: "Ave José", text: "Dios te salve, José, lleno de la gracia divina...", count: 10, type: "bead", mysteryIndex: 1 },
+            { name: "Gloria", text: "Gloria al Padre, y al Hijo, y al Espíritu Santo...", type: "decade-end" },
+            // Tercer Misterio
+            { name: "Tercer Misterio: La huida a Egipto", text: "Meditamos la prontitud de San José para proteger a Jesús y María del peligro, demostrando su vigilancia y su fe inquebrantable en la providencia de Dios.", type: "mystery-intro", mysteryIndex: 2 },
+            { name: "Padre Nuestro", text: "Padre nuestro, que estás en el cielo, santificado sea tu Nombre...", type: "decade-start", mysteryIndex: 2 },
+            { name: "Ave José", text: "Dios te salve, José, lleno de la gracia divina...", count: 10, type: "bead", mysteryIndex: 2 },
+            { name: "Gloria", text: "Gloria al Padre, y al Hijo, y al Espíritu Santo...", type: "decade-end" },
+            // Cuarto Misterio
+            { name: "Cuarto Misterio: El retorno a Nazaret", text: "Meditamos cómo San José regresó a su tierra, cumpliendo el plan de Dios y ofreciendo un hogar y una vida segura para Jesús y María, viviendo una vida oculta de labor y oración.", type: "mystery-intro", mysteryIndex: 3 },
+            { name: "Padre Nuestro", text: "Padre nuestro, que estás en el cielo, santificado sea tu Nombre...", type: "decade-start", mysteryIndex: 3 },
+            { name: "Ave José", text: "Dios te salve, José, lleno de la gracia divina...", count: 10, type: "bead", mysteryIndex: 3 },
+            { name: "Gloria", text: "Gloria al Padre, y al Hijo, y al Espíritu Santo...", type: "decade-end" },
+            // Quinto Misterio
+            { name: "Quinto Misterio: La pérdida y hallazgo de Jesús en el templo", text: "Meditamos el dolor de San José y María al perder al Niño, y su inmensa alegría al encontrarlo, lo que demuestra su papel como modelo de la paternidad y la familia.", type: "mystery-intro", mysteryIndex: 4 },
+            { name: "Padre Nuestro", text: "Padre nuestro, que estás en el cielo, santificado sea tu Nombre...", type: "decade-start", mysteryIndex: 4 },
+            { name: "Ave José", text: "Dios te salve, José, lleno de la gracia divina...", count: 10, type: "bead", mysteryIndex: 4 },
+            { name: "Gloria", text: "Gloria al Padre, y al Hijo, y al Espíritu Santo...", type: "decade-end" },
+            // Oraciones finales
+            { name: "Letanías a San José", text: "Señor, ten piedad de nosotros. Cristo, ten piedad de nosotros. Señor, ten piedad de nosotros. Cristo, óyenos. Cristo, escúchanos. (Continúa la oración...).", type: "final" },
+            { name: "Oración a San José", text: "Oh Dios, que en tu inefable providencia, te dignaste elegir a San José para ser el esposo de tu santísima Madre, te rogamos nos concedas que, al venerarlo como protector, merezcamos tenerlo como intercesor en el cielo. Amén.", type: "final" },
+            { name: "Final", text: "El Rosario a San José ha sido completado. Gracias por orar.", type: "end" }
+        ];
+
+        // Oraciones para la Coronilla de la Divina Misericordia
+        const divineMercyPrayers = [
+            { name: "La Señal de la Cruz", text: "En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén.", type: "start" },
+            { name: "El Padre Nuestro", text: "Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada día; perdona nuestras ofensas, como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación, y líbranos del mal. Amén.", type: "intro" },
+            { name: "El Ave María", text: "Dios te salve, María, llena eres de gracia; el Señor es contigo; bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.", type: "intro" },
+            { name: "El Credo de los Apóstoles", text: "Creo en Dios, Padre todopoderoso, Creador del cielo y de la tierra.\n\nCreo en Jesucristo, su único Hijo, Señor nuestro, que fue concebido por obra y gracia del Espíritu Santo, nació de Santa María Virgen, padeció bajo el poder de Poncio Pilato, fue crucificado, muerto y sepultado, descendió a los infiernos, al tercer día resucitó de entre los muertos, subió a los cielos y está sentado a la derecha de Dios, Padre todopoderoso. Desde allí ha de venir a juzgar a vivos y muertos.\n\nCreo en el Espíritu Santo, la santa Iglesia católica, la comunión de los santos, el perdón de los pecados, la resurrección de la carne y la vida eterna. Amén.", type: "intro" },
+            // Oración por las cuentas grandes
+            { name: "El Padre Eterno", text: "Padre Eterno, te ofrezco el Cuerpo y la Sangre, el Alma y la Divinidad de tu amadísimo Hijo, Nuestro Señor Jesucristo, como propiciación por nuestros pecados y los del mundo entero.", type: "decade-start" },
+            // Primer misterio (10 cuentas)
+            { name: "Por su dolorosa Pasión", text: "Por su dolorosa Pasión, ten misericordia de nosotros y del mundo entero.", count: 10, type: "bead" },
+            // Oración por las cuentas grandes
+            { name: "El Padre Eterno", text: "Padre Eterno, te ofrezco el Cuerpo y la Sangre, el Alma y la Divinidad de tu amadísimo Hijo, Nuestro Señor Jesucristo, como propiciación por nuestros pecados y los del mundo entero.", type: "decade-start" },
+            // Segundo misterio (10 cuentas)
+            { name: "Por su dolorosa Pasión", text: "Por su dolorosa Pasión, ten misericordia de nosotros y del mundo entero.", count: 10, type: "bead" },
+            // Oración por las cuentas grandes
+            { name: "El Padre Eterno", text: "Padre Eterno, te ofrezco el Cuerpo y la Sangre, el Alma y la Divinidad de tu amadísimo Hijo, Nuestro Señor Jesucristo, como propiciación por nuestros pecados y los del mundo entero.", type: "decade-start" },
+            // Tercer misterio (10 cuentas)
+            { name: "Por su dolorosa Pasión", text: "Por su dolorosa Pasión, ten misericordia de nosotros y del mundo entero.", count: 10, type: "bead" },
+            // Oración por las cuentas grandes
+            { name: "El Padre Eterno", text: "Padre Eterno, te ofrezco el Cuerpo y la Sangre, el Alma y la Divinidad de tu amadísimo Hijo, Nuestro Señor Jesucristo, como propiciación por nuestros pecados y los del mundo entero.", type: "decade-start" },
+            // Cuarto misterio (10 cuentas)
+            { name: "Por su dolorosa Pasión", text: "Por su dolorosa Pasión, ten misericordia de nosotros y del mundo entero.", count: 10, type: "bead" },
+            // Oración por las cuentas grandes
+            { name: "El Padre Eterno", text: "Padre Eterno, te ofrezco el Cuerpo y la Sangre, el Alma y la Divinidad de tu amadísimo Hijo, Nuestro Señor Jesucristo, como propiciación por nuestros pecados y los del mundo entero.", type: "decade-start" },
+            // Quinto misterio (10 cuentas)
+            { name: "Por su dolorosa Pasión", text: "Por su dolorosa Pasión, ten misericordia de nosotros y del mundo entero.", count: 10, type: "bead" },
+            // Oración final
+            { name: "La Trinidad", text: "Santo Dios, Santo Fuerte, Santo Inmortal, ten piedad de nosotros y del mundo entero. (x3)", type: "final" },
+            { name: "Oh Sangre y Agua", text: "Oh Sangre y Agua que brotaste del Corazón de Jesús como fuente de misericordia para nosotros, en Ti confío.", type: "final" },
+            { name: "Final", text: "Jesús, en Ti confío. La Coronilla ha sido completada. Gracias por orar.", type: "end" }
+        ];
+        
+        // Oraciones Comunes
+        const commonPrayers = [
+            { title: "La Señal de la Cruz", text: "En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén." },
+            { title: "El Credo", text: "Creo en Dios, Padre todopoderoso, Creador del cielo y de la tierra.\n\nCreo en Jesucristo, su único Hijo, Señor nuestro, que fue concebido por obra y gracia del Espíritu Santo, nació de Santa María Virgen, padeció bajo el poder de Poncio Pilato, fue crucificado, muerto y sepultado, descendió a los infiernos, al tercer día resucitó de entre los muertos, subió a los cielos y está sentado a la derecha de Dios, Padre todopoderoso. Desde allí ha de venir a juzgar a vivos y muertos.\n\nCreo en el Espíritu Santo, la santa Iglesia católica, la comunión de los santos, el perdón de los pecados, la resurrección de la carne y la vida eterna. Amén." },
+            { title: "Padre Nuestro", text: "Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada día; perdona nuestras ofensas, como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación, y líbranos del mal. Amén." },
+            { title: "Ave María", text: "Dios te salve, María, llena eres de gracia; el Señor es contigo; bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén." },
+            { title: "Gloria", text: "Gloria al Padre, y al Hijo, y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén." },
+            { title: "Acto de Contrición", text: "Señor mío, Jesucristo, Dios y Hombre verdadero, Creador, Padre y Redentor mío, por ser Vos quien sois, Bondad infinita, y porque os amo sobre todas las cosas, me pesa de todo corazón haberos ofendido; también me pesa porque podéis castigarme con las penas del infierno. Ayudado de vuestra divina gracia, propongo firmemente nunca más pecar, confesarme y cumplir la penitencia que me fuere impuesta. Amén." },
+            { title: "Oración a San Miguel Arcángel", text: "San Miguel Arcángel, defiéndenos en la batalla. Sé nuestro amparo contra la perversidad y acechanzas del demonio. Reprímale Dios, pedimos suplicantes, y tú, Príncipe de la Milicia Celestial, arroja al infierno con el divino poder a Satanás, y a los otros espíritus malignos que andan dispersos por el mundo para la perdición de las almas. Amén." },
+            { title: "Bajo tu amparo", text: "Bajo tu amparo nos acogemos, Santa Madre de Dios; no desprecies las súplicas que te dirigimos en nuestras necesidades; antes bien, líbranos de todo peligro, ¡oh Virgen gloriosa y bendita! Amén." },
+            { title: "Dulce Madre", text: "Dulce Madre, no te alejes, tu vista de mí no apartes. Ven conmigo a todas partes y solo nunca me dejes. Ya que me proteges tanto como verdadera Madre, haz que me bendiga el Padre, el Hijo y el Espíritu Santo. Amén." },
+            { title: "La Magníficat", text: "Proclama mi alma la grandeza del Señor, se alegra mi espíritu en Dios mi Salvador; porque ha mirado la humildad de su esclava. Desde ahora me felicitarán todas las generaciones, porque el Poderoso ha hecho obras grandes en mí: Su nombre es santo, y su misericordia llega a sus fieles de generación en generación. Él hace proezas con su brazo: dispersa a los soberbios de corazón, derriba del trono a los poderosos y enaltece a los humildes, a los hambrientos los colma de bienes y a los ricos los despide vacíos. Auxilia a Israel, su siervo, acordándose de la misericordia, como lo había prometido a nuestros padres en favor de Abrahán y su descendencia para siempre. Gloria al Padre, al Hijo y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén." },
+            { title: "Cántico de Zacarías (Benedictus)", text: "Bendito sea el Señor, Dios de Israel, porque ha visitado y redimido a su pueblo. Ha suscitado una fuerza de salvación en la casa de David, su siervo, según lo había prometido por boca de sus santos profetas de antiguo. Nos ha salvado de nuestros enemigos y de la mano de todos los que nos odian. Ha hecho misericordia con nuestros padres y se ha acordado de su santa Alianza y del juramento que juró a nuestro padre Abraham. Nos concedió que, liberados de la mano de nuestros enemigos, le sirvamos sin temor, con santidad y justicia en su presencia, todos nuestros días. Y a ti, niño, te llamarán Profeta del Altísimo, porque irás delante del Señor a preparar sus caminos, anunciando a su pueblo la salvación por el perdón de sus pecados. Por la entrañable misericordia de nuestro Dios, nos visitará el sol que nace de lo alto para iluminar a los que viven en tinieblas y en sombra de muerte, para guiar nuestros pasos por el camino de la paz. Gloria al Padre, y al Hijo, y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén."}
+        ];
+
         // Función para generar la lista completa de oraciones del rosario
         function generateRosaryPrayers(mysteryData) {
             let prayers = [
@@ -250,6 +359,11 @@
         const inProgressControls = document.getElementById('in-progress-controls');
         const mysteryGuide = document.getElementById('mystery-guide');
         const beadContainer = document.getElementById('bead-container');
+        const commonPrayersScreen = document.getElementById('common-prayers-screen');
+        const prayersListElem = document.getElementById('prayers-list');
+        const singlePrayerScreen = document.getElementById('single-prayer-screen');
+        const singlePrayerTitleElem = document.getElementById('single-prayer-title');
+        const singlePrayerTextElem = document.getElementById('single-prayer-text');
         
         const mysteryTitleElem = document.getElementById('current-mystery-title');
         const mysteryDescriptionElem = document.getElementById('current-mystery-description');
@@ -261,13 +375,17 @@
         const resetButton = document.getElementById('reset-button');
         const counterElem = document.getElementById('counter');
         const progressBar = document.getElementById('progress-bar');
+        const playCommonPrayerButton = document.getElementById('play-common-prayer-button'); // Nuevo botón de reproducir
         
         let currentPrayerIndex = 0;
         let currentBeadCount = 0;
         let currentMystery;
         let speechActive = false;
         let isAngelusMode = false;
+        let isJoseRosaryMode = false;
+        let isDivineMercyMode = false; // Nueva variable para la Coronilla
         let currentPrayerList = [];
+        let currentCommonPrayerText = "";
 
         // Función para crear las cuentas del rosario
         function createBeads() {
@@ -347,7 +465,7 @@
             updateUIAndSpeak();
         }
 
-        // Función para retroceder a la oración anterior
+        // Función para retroceder en la oración
         function previousPrayerManual() {
             window.speechSynthesis.cancel();
             speechActive = false;
@@ -380,7 +498,8 @@
         // Función para actualizar la UI y hablar
         function updateUIAndSpeak() {
             if (currentPrayerIndex >= currentPrayerList.length) {
-                prayerTextElem.textContent = isAngelusMode ? "¡Ángelus completado! Gracias por orar." : "¡Rosario completado! Gracias por orar.";
+                const finalMessage = isDivineMercyMode ? "¡Coronilla de la Divina Misericordia completada! Gracias por orar." : isJoseRosaryMode ? "¡Rosario a San José completado! Gracias por orar." : isAngelusMode ? "¡Ángelus completado! Gracias por orar." : "¡Rosario completado! Gracias por orar.";
+                prayerTextElem.textContent = finalMessage;
                 counterElem.textContent = "";
                 progressBar.style.width = `100%`;
                 speechActive = false;
@@ -393,37 +512,25 @@
 
             const prayer = currentPrayerList[currentPrayerIndex];
             
-            // Lógica para el rosario
-            if (!isAngelusMode) {
+            // Lógica para el rosario tradicional y San José
+            if (!isAngelusMode && !isDivineMercyMode) {
                 // Si es el inicio de una década o el anuncio del misterio
                 if (prayer.type === 'decade-start' || prayer.type === 'mystery-intro') {
                     const mysteryIndex = prayer.mysteryIndex;
-                    mysteryTitleElem.textContent = `${currentMystery.name}`;
-                    mysteryDescriptionElem.textContent = `${mysteryIndex + 1}º Misterio: ${currentMystery.mysteries[mysteryIndex].name}`;
+                    mysteryTitleElem.textContent = isJoseRosaryMode ? "Rosario a San José" : currentMystery.name;
+                    mysteryDescriptionElem.textContent = prayer.name.includes("Misterio") ? `${mysteryIndex + 1}º Misterio: ${prayer.name.split(': ')[1]}` : prayer.text;
 
-                    // Lógica para el Vía Crucis
-                    if (currentMystery.name === "Misterios Dolorosos") {
+                    // Lógica para el Vía Crucis (solo en Misterios Dolorosos)
+                    if (currentMystery && currentMystery.name === "Misterios Dolorosos") {
                         const stationIndex = mysteryIndex;
                         stationTextElem.textContent = `Meditamos la estación del Vía Crucis ${stationIndex + 1}: ${viaCrucisStations[stationIndex]}.`;
                         stationTextElem.classList.remove('hidden');
                     } else {
                         stationTextElem.classList.add('hidden');
                     }
-                } else if (prayer.type === 'bead') {
-                    // Ocultar misterios y estación
-                    mysteryTitleElem.textContent = '';
+                } else if (prayer.type === 'bead' || prayer.type === 'decade-end' || prayer.type === 'final' || prayer.type === 'start') {
                     mysteryDescriptionElem.textContent = '';
                     stationTextElem.classList.add('hidden');
-                } else if (prayer.type === 'decade-end') {
-                    // Ocultar misterios y estación
-                    mysteryTitleElem.textContent = '';
-                    mysteryDescriptionElem.textContent = '';
-                    stationTextElem.classList.add('hidden');
-                } else if (prayer.type === 'final' || prayer.type === 'start') {
-                    mysteryTitleElem.textContent = '';
-                    mysteryDescriptionElem.textContent = '';
-                    stationTextElem.classList.add('hidden');
-                    beadContainer.classList.add('hidden');
                 }
                 
                 // Mostrar y ocultar las cuentas según el tipo de oración
@@ -435,6 +542,26 @@
                     beadContainer.classList.add('hidden');
                 }
                 
+                // Lógica del contador y barra de progreso
+                if (prayer.count) {
+                    const totalBeads = prayer.count;
+                    counterElem.textContent = `${currentBeadCount + 1} / ${totalBeads}`;
+                    const progress = ((currentBeadCount + 1) / totalBeads) * 100;
+                    progressBar.style.width = `${progress}%`;
+                    progressContainer.classList.remove('hidden');
+                } else {
+                    counterElem.textContent = "";
+                    progressBar.style.width = `0%`;
+                    progressContainer.classList.add('hidden');
+                }
+            } else if (isDivineMercyMode) { // Lógica para la Coronilla de la Divina Misericordia
+                 if (prayer.type === 'bead') {
+                    beadContainer.classList.remove('hidden');
+                    createBeads();
+                    updateBeadColor();
+                } else {
+                    beadContainer.classList.add('hidden');
+                }
                 // Lógica del contador y barra de progreso
                 if (prayer.count) {
                     const totalBeads = prayer.count;
@@ -465,6 +592,8 @@
         // Función para iniciar el rezo para un día específico
         function startPrayerForDay(day) {
             isAngelusMode = false;
+            isJoseRosaryMode = false;
+            isDivineMercyMode = false;
             currentMystery = mysteries[day];
             currentPrayerList = generateRosaryPrayers(currentMystery);
             currentPrayerIndex = 0;
@@ -483,6 +612,8 @@
         // Función para iniciar la oración del Ángelus
         function startAngelusPrayer() {
             isAngelusMode = true;
+            isJoseRosaryMode = false;
+            isDivineMercyMode = false;
             currentPrayerList = angelusPrayers;
             currentMystery = null;
             currentPrayerIndex = 0;
@@ -498,6 +629,83 @@
             speechActive = true;
             updateUIAndSpeak();
         }
+        
+        // Nueva función para iniciar el Rosario a San José
+        function startJoseRosary() {
+            isAngelusMode = false;
+            isJoseRosaryMode = true;
+            isDivineMercyMode = false;
+            currentPrayerList = joseRosaryPrayers;
+            currentMystery = null; // No aplica la misma lógica de misterios diarios
+            currentPrayerIndex = 0;
+            currentBeadCount = 0;
+            
+            startScreen.classList.add('hidden');
+            prayerScreen.classList.remove('hidden');
+            progressContainer.classList.remove('hidden');
+            controls.classList.remove('hidden');
+            mysteryGuide.classList.add('hidden');
+            mainTitleElem.textContent = "Rosario a San José";
+            
+            speechActive = true;
+            updateUIAndSpeak();
+        }
+        
+        // Nueva función para iniciar la Coronilla de la Divina Misericordia
+        function startDivineMercyChaplet() {
+            isAngelusMode = false;
+            isJoseRosaryMode = false;
+            isDivineMercyMode = true;
+            currentPrayerList = divineMercyPrayers;
+            currentMystery = null;
+            currentPrayerIndex = 0;
+            currentBeadCount = 0;
+
+            startScreen.classList.add('hidden');
+            prayerScreen.classList.remove('hidden');
+            progressContainer.classList.remove('hidden');
+            controls.classList.remove('hidden');
+            mysteryGuide.classList.add('hidden');
+            mainTitleElem.textContent = "Coronilla de la Divina Misericordia";
+
+            speechActive = true;
+            updateUIAndSpeak();
+        }
+        
+        // Función para mostrar las oraciones comunes
+        function showCommonPrayers() {
+            startScreen.classList.add('hidden');
+            commonPrayersScreen.classList.remove('hidden');
+            controls.classList.remove('hidden');
+            inProgressControls.classList.add('hidden');
+            resetButton.classList.remove('hidden');
+            mainTitleElem.textContent = "Oraciones Comunes";
+            
+            prayersListElem.innerHTML = '';
+            commonPrayers.forEach(prayer => {
+                const button = document.createElement('button');
+                button.classList.add('bg-green-400', 'text-white', 'font-semibold', 'py-3', 'px-6', 'rounded-full', 'transition', 'duration-300', 'transform', 'hover:scale-105', 'shadow-md', 'hover:shadow-lg', 'focus:outline-none', 'focus:ring-4', 'focus:ring-green-300', 'w-full');
+                button.textContent = prayer.title;
+                button.addEventListener('click', () => showSinglePrayer(prayer));
+                prayersListElem.appendChild(button);
+            });
+        }
+        
+        // Función para mostrar una sola oración común
+        function showSinglePrayer(prayer) {
+            commonPrayersScreen.classList.add('hidden');
+            singlePrayerScreen.classList.remove('hidden');
+            singlePrayerTitleElem.textContent = prayer.title;
+            singlePrayerTextElem.textContent = prayer.text;
+            controls.classList.remove('hidden');
+            inProgressControls.classList.add('hidden');
+            resetButton.classList.remove('hidden');
+            mainTitleElem.textContent = prayer.title;
+            
+            currentCommonPrayerText = prayer.text; // Guarda el texto para reproducirlo
+            playCommonPrayerButton.textContent = "Reproducir";
+            playCommonPrayerButton.classList.remove('hidden');
+        }
 
         // Función para reiniciar la aplicación y volver a la pantalla de selección de día
         function resetApp() {
@@ -505,6 +713,8 @@
             currentBeadCount = 0;
             speechActive = false;
             isAngelusMode = false;
+            isJoseRosaryMode = false;
+            isDivineMercyMode = false;
             
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
@@ -512,6 +722,8 @@
 
             startScreen.classList.remove('hidden');
             prayerScreen.classList.add('hidden');
+            commonPrayersScreen.classList.add('hidden');
+            singlePrayerScreen.classList.add('hidden');
             progressContainer.classList.add('hidden');
             controls.classList.add('hidden');
             mysteryGuide.classList.remove('hidden');
@@ -529,6 +741,9 @@
             });
         });
         document.getElementById('angelus-button').addEventListener('click', startAngelusPrayer);
+        document.getElementById('jose-rosary-button').addEventListener('click', startJoseRosary);
+        document.getElementById('divine-mercy-button').addEventListener('click', startDivineMercyChaplet);
+        document.getElementById('common-prayers-button').addEventListener('click', showCommonPrayers);
         
         // Manejadores de eventos para los botones de control
         stopContinueButton.addEventListener('click', () => {
@@ -549,6 +764,20 @@
         // Manejadores para los nuevos botones de navegación
         backButton.addEventListener('click', previousPrayerManual);
         forwardButton.addEventListener('click', nextPrayerManual);
+
+        // Manejador del botón de Reproducir para oraciones comunes
+        playCommonPrayerButton.addEventListener('click', () => {
+            if ('speechSynthesis' in window) {
+                const speech = new SpeechSynthesisUtterance(currentCommonPrayerText);
+                speech.lang = 'es-ES';
+                speech.rate = 0.9;
+                
+                window.speechSynthesis.cancel();
+                window.speechSynthesis.speak(speech);
+            } else {
+                console.log('Tu navegador no soporta la API de síntesis de voz.');
+            }
+        });
     </script>
 </body>
 </html>

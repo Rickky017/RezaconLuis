@@ -1,792 +1,606 @@
-<!DOCTYPE html>
+
+
+
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
+   
+ <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oración del Ángelus y Rosario</title>
-    <!-- Incluye Tailwind CSS para un diseño moderno y responsivo -->
+    <title>Cotizador, Corporativo Silwey, </title>
+	<link rel="manifest" href="manifest.json">
+	<meta name="theme-color" content="#059669">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         body {
             font-family: 'Inter', sans-serif;
-            @apply bg-gray-100 text-gray-800 flex items-center justify-center min-h-screen p-4;
+            background-color: #f7f9fb;
         }
-        /* Estilo para los textos largos de las oraciones */
-        #current-prayer-text {
-            white-space: pre-wrap; /* Permite saltos de línea y espacios en blanco */
-            text-align: center;
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
         }
-        .bead {
-            @apply w-4 h-4 rounded-full transition-colors duration-300;
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background-color: #059669; 
+            border-radius: 3px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background-color: #e5e7eb; 
+        }
+
+        .product-card-selected {
+            border: 2px solid #059669 !important;
+            background-color: #ecfdf5 !important;
+            transform: scale(1.01);
+        }
+
+        @media (max-width: 767px) {
+            #quote-summary {
+                position: sticky;
+                bottom: 0;
+                z-index: 20;
+                padding: 0.75rem;
+                border-top: 1px solid #d1d5db; 
+            }
         }
     </style>
 </head>
-<body class="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-50">
+<body class="min-h-screen">
 
-    <!-- Contenedor principal de la aplicación -->
-    <div class="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 w-full max-w-sm flex flex-col items-center text-center">
-        <!-- Título y imagen decorativa -->
-        <h1 id="main-title" class="text-3xl font-bold text-blue-700 mb-2">El Santo Rosario</h1>
-        <p class="text-sm text-gray-500 font-medium mb-4">Guía de oración completa</p>
-        <div class="relative w-48 h-48 mb-6 overflow-hidden rounded-full shadow-lg">
-            <img src="https://placehold.co/400x400/D0DDE7/69798C?text=Reza+con+Luis" alt="Imagen de un rosario" class="w-full h-full object-cover animate-pulse-slow">
-        </div>
-        
-        <!-- Contenedor para la selección del día y la guía -->
-        <div id="start-screen" class="w-full">
-            <h2 class="text-xl font-bold text-gray-700 mb-4 text-center">Selecciona una oración</h2>
-            <div class="grid grid-cols-2 gap-4">
-                <button id="angelus-button" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md col-span-2">El Ángelus</button>
-            </div>
-            <div class="grid grid-cols-2 gap-4 mt-4">
-                <button data-day="monday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md">Lunes</button>
-                <button data-day="tuesday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md">Martes</button>
-                <button data-day="wednesday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md">Miércoles</button>
-                <button data-day="thursday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md">Jueves</button>
-                <button data-day="friday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md">Viernes</button>
-                <button data-day="saturday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md">Sábado</button>
-                <button data-day="sunday" class="day-button bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md col-span-2">Domingo</button>
-            </div>
-            <!-- Botones para el Rosario a San José y la Coronilla de la Divina Misericordia -->
-            <div class="grid grid-cols-2 gap-4 mt-4">
-                <button id="jose-rosary-button" class="day-button bg-orange-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md col-span-2">Rosario a San José</button>
-            </div>
-            <div class="grid grid-cols-2 gap-4 mt-4">
-                 <button id="divine-mercy-button" class="day-button bg-red-600 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md col-span-2">La Coronilla de la Divina Misericordia</button>
-            </div>
-             <div class="grid grid-cols-2 gap-4 mt-4">
-                <button id="common-prayers-button" class="day-button bg-green-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md col-span-2">Oraciones Comunes</button>
-            </div>
-            <div id="mystery-guide" class="w-full text-left mt-6">
-                <h2 class="text-xl font-bold text-gray-700 mb-2 text-center">Misterios del Rosario por Día</h2>
-                <ul class="text-gray-600 space-y-2 text-sm">
-                    <li>Lunes y Sábado: Misterios Gozosos</li>
-                    <li>Martes y Viernes: Misterios Dolorosos</li>
-                    <li>Miércoles y Domingo: Misterios Gloriosos</li>
-                    <li>Jueves: Misterios Luminosos</li>
-                </ul>
-            </div>
-        </div>
-        
-        <!-- Contenedores para la oración actual (ocultos al inicio) -->
-        <div id="prayer-screen" class="min-h-[100px] flex flex-col justify-center items-center w-full hidden">
-            <p id="current-mystery-title" class="text-xl font-bold text-blue-800 mb-2"></p>
-            <p id="current-mystery-description" class="text-sm italic text-gray-600 mb-4"></p>
-            <!-- Contenedor para las cuentas del rosario -->
-            <div id="bead-container" class="flex justify-center space-x-2 my-4 hidden"></div>
-            <p id="current-prayer-text" class="text-2xl font-semibold text-gray-700 mb-4"></p>
-            <!-- Elemento para el texto de la estación del Vía Crucis -->
-            <p id="station-text" class="text-base text-gray-500 mt-2 mb-4 hidden"></p>
-        </div>
-        
-        <!-- Contenedor para el listado de oraciones comunes -->
-        <div id="common-prayers-screen" class="w-full hidden">
-            <h2 class="text-xl font-bold text-gray-700 mb-4 text-center">Oraciones Comunes</h2>
-            <div id="prayers-list" class="space-y-4 text-center"></div>
-        </div>
-        
-        <!-- Contenedor para el texto de la oración común seleccionada -->
-        <div id="single-prayer-screen" class="w-full hidden">
-            <h2 id="single-prayer-title" class="text-xl font-bold text-blue-800 mb-4 text-center"></h2>
-            <p id="single-prayer-text" class="text-base text-gray-700 mb-6 text-center"></p>
-            <div class="flex space-x-4 w-full justify-center">
-                <button id="play-common-prayer-button" class="bg-blue-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300">
-                    Reproducir
-                </button>
-                <button id="back-to-home-button" class="bg-gray-300 text-gray-700 font-semibold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-gray-300">
-                    Volver al inicio
-                </button>
-            </div>
-        </div>
+    <div class="max-w-7xl mx-auto p-4 md:p-8">
+        <header class="mb-8 text-center">
+            <h1 class="text-3xl font-extrabold text-emerald-700 tracking-tight">CORPORATIVO SILWEY </h1>
+				            <p class="text-gray-500 mt-1">Herramienta de cotizacion de Royal Prestige </p>
+        </header>
 
-        <!-- Indicador del progreso (oculto al inicio) -->
-        <div id="progress-container" class="w-full hidden">
-            <div class="w-full h-2 bg-blue-100 rounded-full mb-6">
-                <div id="progress-bar" class="h-full bg-blue-600 rounded-full transition-all duration-300 ease-in-out" style="width: 0%;"></div>
-            </div>
-            <p id="counter" class="text-lg font-bold text-blue-600 mb-6"></p>
-        </div>
-
-        <!-- Botones de control -->
-        <div id="controls" class="flex flex-col space-y-4 w-full hidden">
-            <div id="in-progress-controls" class="w-full flex flex-col space-y-4">
-                <!-- Botones de navegación agregados aquí -->
-                <div class="flex space-x-4 w-full">
-                    <button id="back-button" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-gray-300">
-                        Retroceder
-                    </button>
-                    <button id="forward-button" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-gray-300">
-                        Avanzar
-                    </button>
+        <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-lg h-[80vh] flex flex-col">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Catalogo de Productos</h2>
+                
+                <div class="flex flex-col sm:flex-row gap-4 mb-4">
+                    <input type="text" id="product-search" placeholder="Buscar por nombre o SKU..." class="flex-grow p-2 border border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 transition duration-150">
+                    <select type="text" id="category-filter" class="p-2 border border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 transition duration-150 sm:w-1/3">
+                        <option value="">Todas las Categorias</option>
+                    </select>
                 </div>
-                <button id="stop-continue-button" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-red-300">
-                    Detener
-                </button>
-                <button id="reset-button" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-gray-300">
-                    Reiniciar
-                </button>
+
+                <div id="product-list" class="flex-grow overflow-y-auto custom-scroll space-y-3">
+                    <p class="text-center text-gray-500 pt-4">Cargando productos...</p>
+                </div>
             </div>
-        </div>
+
+            <div class="lg:col-span-1">
+                <div id="quote-summary" class="bg-white rounded-xl shadow-xl border border-emerald-100">
+                    <div class="p-6">
+                        <h2 class="text-xl font-bold text-emerald-700 mb-4 border-b pb-2">Resumen de Cotizacion</h2>
+                        
+                        <div id="quote-items" class="min-h-[100px] max-h-[250px] overflow-y-auto custom-scroll space-y-3 mb-4">
+                            <p id="empty-quote-message" class="text-center text-gray-400 mt-6 italic">Añade productos del catalogo.</p>
+                        </div>
+
+                        <div class="space-y-2 border-t pt-4">
+                            <div class="flex justify-between font-medium text-gray-600">
+                                <span>Subtotal:</span>
+                                <span id="subtotal-display">$0.00</span>
+                            </div>
+
+                            <div class="flex justify-between items-center">
+                                <label for="discount-percentage" class="text-gray-600">Descuento (%):</label>
+                                <input type="number" id="discount-percentage" value="0" min="0" max="100" class="w-16 text-right p-1 border border-gray-300 rounded-lg">
+                            </div>
+                            <div class="flex justify-between font-medium text-red-500 border-b pb-2">
+                                <span>Descuento Aplicado:</span>
+                                <span id="discount-amount-display">-$0.00</span>
+                            </div>
+
+                            <div class="flex justify-between font-bold text-2xl text-emerald-600 pt-2">
+                                <span>Total a Pagar:</span>
+                                <span id="total-display">$0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6 bg-yellow-50 rounded-b-xl border-t border-yellow-200">
+                        <h3 class="text-lg font-bold text-yellow-800 mb-3">Control de Regalos por Volumen (Max 10%)</h3>
+                        <div class="flex justify-between font-medium text-gray-700">
+                            <span>Valor Total de Regalos Añadidos:</span>
+                            <span id="gift-total-display" class="font-bold">$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-600 mb-2">
+                            <span>Valor Maximo Permitido (10% del Total):</span>
+                            <span id="gift-max-display">$0.00</span>
+                        </div>
+                        <div id="gift-warning-message" class="mt-3 p-3 text-center rounded-lg font-semibold hidden"></div>
+                    </div>
+
+                    <div class="p-6 bg-emerald-50 rounded-b-xl border-t border-emerald-200">
+                        <h3 class="text-lg font-bold text-emerald-700 mb-3">Opciones de Financiamiento</h3>
+
+                        <div class="flex justify-between items-center mb-4">
+                            <label for="interest-rate" class="text-gray-700 font-medium">Tasa de Interes Anual (%):</label>
+                            <input type="number" id="interest-rate" value="31" min="0" max="100" step="0.5" class="w-20 text-right p-1 border border-gray-300 rounded-lg">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="initial-payment" class="text-gray-700 font-medium block mb-2">Pago Inicial:</label>
+                            <div class="flex gap-2 mb-2">
+                                <button data-percent="5" class="preset-initial-btn flex-1 py-1 px-3 text-sm rounded-full bg-emerald-200 text-emerald-800 hover:bg-emerald-300 transition duration-150">5%</button>
+                                <button data-percent="10" class="preset-initial-btn flex-1 py-1 px-3 text-sm rounded-full bg-emerald-200 text-emerald-800 hover:bg-emerald-300 transition duration-150">10%</button>
+                                <button data-percent="20" class="preset-initial-btn flex-1 py-1 px-3 text-sm rounded-full bg-emerald-200 text-emerald-800 hover:bg-emerald-300 transition duration-150">20%</button>
+                                <button data-percent="30" class="preset-initial-btn flex-1 py-1 px-3 text-sm rounded-full bg-emerald-200 text-emerald-800 hover:bg-emerald-300 transition duration-150">30%</button>
+                            </div>
+                            <input type="number" id="initial-payment" value="0" min="0" class="w-full text-right p-2 border border-gray-300 rounded-lg">
+                            <p id="initial-payment-percent-display" class="text-sm text-gray-500 text-right mt-1"></p>
+
+                            <div id="initial-payment-warning" class="mt-2 p-2 text-center rounded-lg font-medium text-red-800 bg-red-100 hidden">
+                                ⚠️ El Pago Inicial minimo debe ser del 5% del Total a Pagar.
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <p class="text-gray-700 font-medium mb-2">Plazo (Meses):</p>
+                            <div class="mb-4">
+    <p class="text-gray-700 font-medium mb-2 font-bold">Plazo (Meses):</p>
+    <div id="term-options-container" class="grid grid-cols-2 gap-2 mb-3">
+        <p class="text-xs text-gray-400">Seleccione productos para ver cuotas...</p>
+    </div>
+    
+    
+                                
+                                <div class="flex items-center space-x-1">
+                                    <span class="text-xs text-gray-500">Otros:</span>
+                                    <input type="number" id="custom-term" min="1" max="120" placeholder="Meses" class="w-16 p-1 border border-emerald-300 rounded-lg text-sm text-center focus:ring-emerald-500 focus:border-emerald-500">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2 border-t pt-4">
+                            <div class="flex justify-between text-gray-600">
+                                <span>Monto a Financiar:</span>
+                                <span id="amount-financed-display">$0.00</span>
+                            </div>
+                            <div class="flex justify-between font-bold text-xl text-emerald-700">
+                                <span>Pago Mensual Estimado:</span>
+                                <span id="monthly-payment-display">$0.00</span>
+                            </div>
+                        </div>
+
+                        <button id="clear-quote-button" class="w-full mt-4 py-2 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 transition duration-150 shadow-md">
+                            Limpiar Cotizacion
+                        </button>
+                    </div>
+                    
+                    <div class="p-6 bg-blue-50 rounded-b-xl border-t border-blue-200">
+                        <h3 class="text-lg font-bold text-blue-700 mb-3">Enviar Cotizacion</h3>
+                        <input type="text" id="client-name" placeholder="Nombre del Cliente (Opcional)" class="w-full p-2 mb-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+                        <input type="tel" id="client-whatsapp" placeholder="Número de WhatsApp (Ej: 8098936842)" class="w-full p-2 mb-4 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150">
+                        <button id="send-whatsapp-button" class="w-full py-3 bg-green-500 text-white font-extrabold text-lg rounded-lg hover:bg-green-600 transition duration-150 shadow-lg flex items-center justify-center space-x-2">
+                            <span>Enviar por WhatsApp</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <script>
-        // Definición de los misterios del Rosario por día de la semana
-        const mysteries = {
-            sunday: { 
-                name: "Misterios Gloriosos", 
-                mysteries: [
-                    { name: "La Resurrección de Jesús", description: "Meditamos cómo la resurrección de Jesús es la victoria sobre la muerte y el pecado, el fundamento de nuestra fe y la fuente de nuestra esperanza de vida eterna. A través de este misterio, se nos revela el poder de Dios y la promesa de que la fe puede triunfar sobre toda adversidad, transformando el dolor en una alegría inmensa y duradera." }, 
-                    { name: "La Ascensión de Jesús", description: "Meditamos cómo Jesús, después de resucitar, sube al cielo para sentarse a la derecha del Padre, glorificado en su humanidad. Este misterio nos enseña que Jesús ha preparado un lugar para nosotros en el cielo y nos ha dejado la misión de continuar su obra en la Tierra, confiando en su Espíritu Santo que nos guía y fortalece." }, 
-                    { name: "La Venida del Espíritu Santo", description: "Meditamos el don del Espíritu Santo, que desciende sobre los apóstoles y María, dándoles la fortaleza y el coraje necesarios para proclamar el Evangelio. Esta efusión nos invita a pedir al Espíritu Santo sus dones para vivir con valentía nuestra fe, ser testigos de Cristo en el mundo y participar activamente en la vida de la Iglesia." }, 
-                    { name: "La Asunción de María", description: "Meditamos cómo la Virgen María, al final de su vida terrenal, fue llevada en cuerpo y alma al cielo por ser la Madre de Dios, sin pasar por la corrupción del sepulcro. Este misterio es una anticipación y una promesa de nuestra propia resurrección y de la gloria que nos espera si vivimos una vida de santidad. María nos muestra el camino hacia la casa del Padre." }, 
-                    { name: "La Coronación de María como Reina", description: "Meditamos a María como Reina del cielo y de la tierra, coronada de gloria por su Hijo Jesús. Ella intercede por nosotros con el amor de una madre. Este misterio nos recuerda su realeza espiritual y nos invita a confiar plenamente en su intercesión para alcanzar las gracias de su Hijo y vivir como sus hijos en el Reino de Dios." }
-                ] 
-            },
-            monday: { 
-                name: "Misterios Gozosos", 
-                mysteries: [
-                    { name: "La Anunciación", description: "Meditamos el 'Sí' humilde y lleno de fe de la Virgen María al Ángel Gabriel. En este misterio, la Palabra de Dios se hace carne, y la humildad de María se convierte en el camino para que el Salvador entre en el mundo. Se nos invita a reflexionar sobre la importancia de la obediencia y la entrega total a la voluntad divina en nuestras propias vidas." },
-                    { name: "La Visitación", description: "Meditamos la caridad de María que, llena del Espíritu Santo, viaja para ayudar a su prima Isabel, quien también esperaba un hijo. Al encuentro de estas dos mujeres, el niño Juan el Bautista se estremece en el vientre de su madre, reconociendo a su Señor. Este misterio nos muestra el gozo que proviene del servicio desinteresado al prójimo y la importancia de llevar a Cristo a los demás a través de nuestras acciones." },
-                    { name: "El Nacimiento de Jesús", description: "Meditamos la llegada de Jesús al mundo en la pobreza y la sencillez de un pesebre en Belén. Dios se hace pequeño y vulnerable por amor a la humanidad. Este misterio nos invita a la humildad, a despojarnos de lo superfluo y a encontrar la verdadera alegría en la presencia de Cristo, que nace para habitar en nuestros corazones." },
-                    { name: "La Presentación de Jesús en el Templo", description: "Meditamos la obediencia de María y José al presentar a su hijo de 40 días en el templo, conforme a la ley de Moisés. Aquí, el anciano Simeón reconoce en el niño la salvación esperada por Israel. Este misterio nos enseña la importancia de la obediencia a la voluntad de Dios y nos recuerda que, al ofrecer a nuestros seres queridos al Señor, encontramos la verdadera paz." },
-                    { name: "El Niño Perdido y Hallado en el Templo", description: "Meditamos el dolor de María y José al perder a Jesús y la alegría inmensa al encontrarlo, tres días después, enseñando a los doctores de la ley en el templo. Este misterio nos hace reflexionar sobre la angustia de perder la presencia de Jesús en nuestra vida por el pecado y el inmenso gozo que experimentamos al regresar a Él a través de la oración, la penitencia y la reconciliación." }
-                ]
-            },
-            tuesday: { 
-                name: "Misterios Dolorosos", 
-                mysteries: [
-                    { name: "La Agonía de Jesús en el Huerto", description: "Meditamos el inmenso sufrimiento de Jesús al anticipar la pasión, el peso de todos los pecados de la humanidad sobre sus hombros y su entrega total a la voluntad del Padre. Él nos enseña a orar y a confiar en Dios en los momentos de mayor angustia, aceptando el cáliz de la prueba con amor y resignación." },
-                    { name: "La Flagelación de Jesús", description: "Meditamos la injusticia y la crueldad del castigo que Jesús sufrió por nuestros pecados. En este misterio, su cuerpo inmaculado es brutalmente herido, ofreciendo cada azote como reparación. Nos invita a reflexionar sobre la pureza de Cristo frente a la impureza del mundo y a ofrecer nuestros propios sufrimientos como sacrificio de amor." },
-                    { name: "La Coronación de Espinas", description: "Meditamos la humillación y el dolor que Jesús experimentó al ser coronado con espinas y ser burlado como 'rey de los judíos'. La verdadera realeza de Cristo no se basa en el poder terrenal, sino en el amor y el sacrificio. Este misterio nos llama a renunciar a la vanidad y a la soberbia del mundo para imitar la humildad de nuestro Salvador." },
-                    { name: "Jesús con la Cruz a Cuestas", description: "Meditamos la pesada carga de la cruz que Jesús llevó por amor a nosotros, el sacrificio que realizó para salvarnos. Este misterio nos invita a llevar nuestras propias cruces con paciencia y fe, sabiendo que Él camina a nuestro lado y nos ayuda a sobrellevar el peso de nuestras dificultades y sufrimientos." },
-                    { name: "La Crucifixión y Muerte de Jesús", description: "Meditamos el sacrificio supremo de amor que Jesús realizó en la cruz para redimirnos. Él se entregó por completo, perdonando a sus verdugos y abriendo las puertas del cielo para todos. Este misterio nos muestra la inmensidad del amor de Dios por nosotros y nos llama a la conversión, a vivir una vida de gratitud por tan grande don." }
-                ]
-            },
-            wednesday: { 
-                name: "Misterios Gloriosos", 
-                mysteries: [
-                    { name: "La Resurrección de Jesús", description: "Meditamos cómo la resurrección de Jesús es la victoria sobre la muerte y el pecado, el fundamento de nuestra fe y la fuente de nuestra esperanza de vida eterna. A través de este misterio, se nos revela el poder de Dios y la promesa de que la fe puede triunfar sobre toda adversidad, transformando el dolor en una alegría inmensa y duradera." }, 
-                    { name: "La Ascensión de Jesús", description: "Meditamos cómo Jesús, después de resucitar, sube al cielo para sentarse a la derecha del Padre, glorificado en su humanidad. Este misterio nos enseña que Jesús ha preparado un lugar para nosotros en el cielo y nos ha dejado la misión de continuar su obra en la Tierra, confiando en su Espíritu Santo que nos guía y fortalece." }, 
-                    { name: "La Venida del Espíritu Santo", description: "Meditamos el don del Espíritu Santo, que desciende sobre los apóstoles y María, dándoles la fortaleza y el coraje necesarios para proclamar el Evangelio. Esta efusión nos invita a pedir al Espíritu Santo sus dones para vivir con valentía nuestra fe, ser testigos de Cristo en el mundo y participar activamente en la vida de la Iglesia." }, 
-                    { name: "La Asunción de María", description: "Meditamos cómo la Virgen María, al final de su vida terrenal, fue llevada en cuerpo y alma al cielo por ser la Madre de Dios, sin pasar por la corrupción del sepulcro. Este misterio es una anticipación y una promesa de nuestra propia resurrección y de la gloria que nos espera si vivimos una vida de santidad. María nos muestra el camino hacia la casa del Padre." }, 
-                    { name: "La Coronación de María como Reina", description: "Meditamos a María como Reina del cielo y de la tierra, coronada de gloria por su Hijo Jesús. Ella intercede por nosotros con el amor de una madre. Este misterio nos recuerda su realeza espiritual y nos invita a confiar plenamente en su intercesión para alcanzar las gracias de su Hijo y vivir como sus hijos en el Reino de Dios." }
-                ] 
-            },
-            thursday: { 
-                name: "Misterios Luminosos", 
-                mysteries: [
-                    { name: "El Bautismo de Jesús", description: "Meditamos cómo Jesús, en su bautismo, inaugura su vida pública y se une a los pecadores para anunciar la llegada del Reino de Dios. Este misterio nos invita a renovar nuestra fe en nuestro propio bautismo, a reconocer nuestra filiación divina y a seguir a Cristo en nuestra misión de anunciar su amor y su verdad a todos los hombres." }, 
-                    { name: "La Autorrevelación en las Bodas de Caná", description: "Meditamos cómo Jesús manifiesta su poder por primera vez a través del milagro de convertir el agua en vino, a petición de su madre María. Este misterio nos muestra la importancia de la intercesión de la Virgen y nos invita a confiar en su poderosa ayuda para nuestras necesidades, sabiendo que su Hijo nada le niega." }, 
-                    { name: "El Anuncio del Reino de Dios", description: "Meditamos el llamado de Jesús a la conversión y la invitación a vivir las bienaventuranzas, que nos acercan a la voluntad del Padre. Este misterio nos recuerda que el Reino de Dios es una realidad presente en nuestras vidas, que se manifiesta en la caridad, el perdón y la justicia, y nos exhorta a ser constructores de ese reino en el mundo." }, 
-                    { name: "La Transfiguración de Jesús", description: "Meditamos la revelación de la divinidad de Jesús a sus apóstoles Pedro, Santiago y Juan en el monte Tabor, quienes presencian su gloria. Este misterio nos llena de esperanza, pues nos muestra un anticipo de la gloria que nos espera en el cielo y nos da la fortaleza para afrontar los momentos de oscuridad y prueba, sabiendo que la luz de Cristo nos guiará siempre." }, 
-                    { name: "La Institución de la Eucaristía", description: "Meditamos el amor supremo de Jesús al entregarse por nosotros en el pan y el vino, dejando su presencia real para nuestra salvación. La Eucaristía es el sacramento de su Pasión y Resurrección, el alimento de vida eterna que nos fortalece en nuestro camino de fe y nos une a Él y a la Iglesia. Este misterio es una invitación a vivir en continua comunión con Cristo." }
-                ] 
-            },
-            friday: { 
-                name: "Misterios Dolorosos", 
-                mysteries: [
-                    { name: "La Agonía de Jesús en el Huerto", description: "Meditamos el inmenso sufrimiento de Jesús al anticipar la pasión, el peso de todos los pecados de la humanidad sobre sus hombros y su entrega total a la voluntad del Padre. Él nos enseña a orar y a confiar en Dios en los momentos de mayor angustia, aceptando el cáliz de la prueba con amor y resignación." },
-                    { name: "La Flagelación de Jesús", description: "Meditamos la injusticia y la crueldad del castigo que Jesús sufrió por nuestros pecados. En este misterio, su cuerpo inmaculado es brutalmente herido, ofreciendo cada azote como reparación. Nos invita a reflexionar sobre la pureza de Cristo frente a la impureza del mundo y a ofrecer nuestros propios sufrimientos como sacrificio de amor." },
-                    { name: "La Coronación de Espinas", description: "Meditamos la humillación y el dolor que Jesús experimentó al ser coronado con espinas y ser burlado como 'rey de los judíos'. La verdadera realeza de Cristo no se basa en el poder terrenal, sino en el amor y el sacrificio. Este misterio nos llama a renunciar a la vanidad y a la soberbia del mundo para imitar la humildad de nuestro Salvador." },
-                    { name: "Jesús con la Cruz a Cuestas", description: "Meditamos la pesada carga de la cruz que Jesús llevó por amor a nosotros, el sacrificio que realizó para salvarnos. Este misterio nos invita a llevar nuestras propias cruces con paciencia y fe, sabiendo que Él camina a nuestro lado y nos ayuda a sobrellevar el peso de nuestras dificultades y sufrimientos." },
-                    { name: "La Crucifixión y Muerte de Jesús", description: "Meditamos el sacrificio supremo de amor que Jesús realizó en la cruz para redimirnos. Él se entregó por completo, perdonando a sus verdugos y abriendo las puertas del cielo para todos. Este misterio nos muestra la inmensidad del amor de Dios por nosotros y nos llama a la conversión, a vivir una vida de gratitud por tan grande don." }
-                ]
-            },
-            saturday: { 
-                name: "Misterios Gozosos", 
-                mysteries: [
-                    { name: "La Anunciación", description: "Meditamos el 'Sí' humilde y lleno de fe de la Virgen María al Ángel Gabriel. En este misterio, la Palabra de Dios se hace carne, y la humildad de María se convierte en el camino para que el Salvador entre en el mundo. Se nos invita a reflexionar sobre la importancia de la obediencia y la entrega total a la voluntad divina en nuestras propias vidas." },
-                    { name: "La Visitación", description: "Meditamos la caridad de María que, llena del Espíritu Santo, viaja para ayudar a su prima Isabel, quien también esperaba un hijo. Al encuentro de estas dos mujeres, el niño Juan el Bautista se estremece en el vientre de su madre, reconociendo a su Señor. Este misterio nos muestra el gozo que proviene del servicio desinteresado al prójimo y la importancia de llevar a Cristo a los demás a través de nuestras acciones." },
-                    { name: "El Nacimiento de Jesús", description: "Meditamos la llegada de Jesús al mundo en la pobreza y la sencillez de un pesebre en Belén. Dios se hace pequeño y vulnerable por amor a la humanidad. Este misterio nos invita a la humildad, a despojarnos de lo superfluo y a encontrar la verdadera alegría en la presencia de Cristo, que nace para habitar en nuestros corazones." },
-                    { name: "La Presentación de Jesús en el Templo", description: "Meditamos la obediencia de María y José al presentar a su hijo de 40 días en el templo, conforme a la ley de Moisés. Aquí, el anciano Simeón reconoce en el niño la salvación esperada por Israel. Este misterio nos enseña la importancia de la obediencia a la voluntad de Dios y nos recuerda que, al ofrecer a nuestros seres queridos al Señor, encontramos la verdadera paz." },
-                    { name: "El Niño Perdido y Hallado en el Templo", description: "Meditamos el dolor de María y José al perder a Jesús y la alegría inmensa al encontrarlo, tres días después, enseñando a los doctores de la ley en el templo. Este misterio nos hace reflexionar sobre la angustia de perder la presencia de Jesús en nuestra vida por el pecado y el inmenso gozo que experimentamos al regresar a Él a través de la oración, la penitencia y la reconciliación." }
-                ]
-            }
-        };
+<script>
+    let quote = {
+        items: [],
+        discountPercentage: 0,
+        interestRate: 0,
+        initialPayment: 0,
+        termMonths: 24
+    };
+    const GIFT_LIMIT_PERCENTAGE = 0.10; 
+    const MINIMUM_INITIAL_PAYMENT_PERCENTAGE = 0.05; 
 
-        // Estaciones del Vía Crucis para los Misterios Dolorosos
-        const viaCrucisStations = [
-            "Jesús es sentenciado a muerte",
-            "Jesús carga con la Cruz",
-            "Jesús cae por primera vez",
-            "Jesús encuentra a su Santísima Madre",
-            "Simón de Cirene ayuda a Jesús a llevar la Cruz",
-            "La Verónica limpia el rostro de Jesús",
-            "Jesús cae por segunda vez",
-            "Jesús consuela a las mujeres de Jerusalén",
-            "Jesús cae por tercera vez",
-            "Jesús es despojado de sus vestiduras",
-            "Jesús es clavado en la Cruz",
-            "Jesús muere en la Cruz",
-            "Jesús es bajado de la Cruz y entregado a su Madre",
-            "Jesús es puesto en el sepulcro",
-        ];
-        
-        // Oraciones del Ángelus y su estructura
-        const angelusPrayers = [
-            { name: "El Ángelus", text: "V. El Ángel del Señor anunció a María.\nR. Y ella concibió por obra del Espíritu Santo.", type: "angelus" },
-            { name: "El Ángelus", text: "Dios te salve, María, llena eres de gracia; el Señor es contigo; bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.", type: "angelus-ave-maria" },
-            { name: "El Ángelus", text: "V. He aquí la esclava del Señor.\nR. Hágase en mí según tu palabra.", type: "angelus" },
-            { name: "El Ángelus", text: "Dios te salve, María, llena eres de gracia; el Señor es contigo; bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.", type: "angelus-ave-maria" },
-            { name: "El Ángelus", text: "V. Y el Verbo de Dios se hizo carne.\nR. Y habitó entre nosotros.", type: "angelus" },
-            { name: "El Ángelus", text: "Dios te salve, María, llena eres de gracia; el Señor es contigo; bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.", type: "angelus-ave-maria" },
-            { name: "El Ángelus", text: "V. Ruega por nosotros, Santa Madre de Dios.\nR. Para que seamos dignos de alcanzar las promesas de Cristo.", type: "angelus" },
-            { name: "El Ángelus", text: "Oremos:\n\nDerrama, Señor, tu gracia sobre nosotros, que, por el anuncio del Ángel, hemos conocido la encarnación de tu Hijo, para que, por su pasión y su cruz, lleguemos a la gloria de la resurrección. Por Cristo nuestro Señor. Amén.", type: "angelus-final" },
-            { name: "El Ángelus", text: "Gloria al Padre, y al Hijo, y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén. (x3)", type: "angelus-end" },
-            { name: "Final", text: "El Ángelus ha sido completado. Gracias por orar.", type: "end" }
-        ];
+    const formatter = new Intl.NumberFormat('es-MX', {
+        style: 'currency',
+        currency: 'MXN',
+        minimumFractionDigits: 2
+    });
 
-        // Oraciones para el Rosario a San José
-        const joseRosaryPrayers = [
-            { name: "La Señal de la Cruz", text: "En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén.", type: "start" },
-            { name: "Acto de Contrición", text: "Señor mío, Jesucristo, Dios y Hombre verdadero, Creador, Padre y Redentor mío, por ser Vos quien sois, Bondad infinita, y porque os amo sobre todas las cosas, me pesa de todo corazón haberos ofendido; también me pesa porque podéis castigarme con las penas del infierno. Ayudado de vuestra divina gracia, propongo firmemente nunca más pecar, confesarme y cumplir la penitencia que me fuere impuesta. Amén.", type: "intro" },
-            { name: "Invocación a San José", text: "Oh glorioso San José, tú que fuiste elegido por Dios como padre adoptivo de Jesús y esposo de María, ven en nuestra ayuda. Te encomendamos este Rosario, meditando tus virtudes, para que nos ayudes a imitar tu fe, tu humildad y tu amor a la Sagrada Familia. Amén.", type: "intro" },
-            // Primer Misterio
-            { name: "Primer Misterio: La duda de San José", text: "Meditamos cómo San José, ante la concepción virginal de María, vivió una gran tribulación y dolor, pero confió en la palabra del Ángel, aceptando su papel de protector de Jesús y María.", type: "mystery-intro", mysteryIndex: 0 },
-            { name: "Padre Nuestro", text: "Padre nuestro, que estás en el cielo, santificado sea tu Nombre...", type: "decade-start", mysteryIndex: 0 },
-            { name: "Ave José", text: "Dios te salve, José, lleno de la gracia divina, entre tus brazos el Señor reposó, y en tu corazón Él nació. Bendito eres tú entre todos los hombres y bendito es el fruto de tu castidad, Jesús. San José, padre de Jesús y esposo de María, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.", count: 10, type: "bead", mysteryIndex: 0 },
-            { name: "Gloria", text: "Gloria al Padre, y al Hijo, y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.", type: "decade-end" },
-            // Segundo Misterio
-            { name: "Segundo Misterio: El nacimiento de Jesús en Belén", text: "Meditamos la obediencia de San José al dirigirse a Belén y su cuidado amoroso al ver nacer al Hijo de Dios en la pobreza de un pesebre.", type: "mystery-intro", mysteryIndex: 1 },
-            { name: "Padre Nuestro", text: "Padre nuestro, que estás en el cielo, santificado sea tu Nombre...", type: "decade-start", mysteryIndex: 1 },
-            { name: "Ave José", text: "Dios te salve, José, lleno de la gracia divina...", count: 10, type: "bead", mysteryIndex: 1 },
-            { name: "Gloria", text: "Gloria al Padre, y al Hijo, y al Espíritu Santo...", type: "decade-end" },
-            // Tercer Misterio
-            { name: "Tercer Misterio: La huida a Egipto", text: "Meditamos la prontitud de San José para proteger a Jesús y María del peligro, demostrando su vigilancia y su fe inquebrantable en la providencia de Dios.", type: "mystery-intro", mysteryIndex: 2 },
-            { name: "Padre Nuestro", text: "Padre nuestro, que estás en el cielo, santificado sea tu Nombre...", type: "decade-start", mysteryIndex: 2 },
-            { name: "Ave José", text: "Dios te salve, José, lleno de la gracia divina...", count: 10, type: "bead", mysteryIndex: 2 },
-            { name: "Gloria", text: "Gloria al Padre, y al Hijo, y al Espíritu Santo...", type: "decade-end" },
-            // Cuarto Misterio
-            { name: "Cuarto Misterio: El retorno a Nazaret", text: "Meditamos cómo San José regresó a su tierra, cumpliendo el plan de Dios y ofreciendo un hogar y una vida segura para Jesús y María, viviendo una vida oculta de labor y oración.", type: "mystery-intro", mysteryIndex: 3 },
-            { name: "Padre Nuestro", text: "Padre nuestro, que estás en el cielo, santificado sea tu Nombre...", type: "decade-start", mysteryIndex: 3 },
-            { name: "Ave José", text: "Dios te salve, José, lleno de la gracia divina...", count: 10, type: "bead", mysteryIndex: 3 },
-            { name: "Gloria", text: "Gloria al Padre, y al Hijo, y al Espíritu Santo...", type: "decade-end" },
-            // Quinto Misterio
-            { name: "Quinto Misterio: La pérdida y hallazgo de Jesús en el templo", text: "Meditamos el dolor de San José y María al perder al Niño, y su inmensa alegría al encontrarlo, lo que demuestra su papel como modelo de la paternidad y la familia.", type: "mystery-intro", mysteryIndex: 4 },
-            { name: "Padre Nuestro", text: "Padre nuestro, que estás en el cielo, santificado sea tu Nombre...", type: "decade-start", mysteryIndex: 4 },
-            { name: "Ave José", text: "Dios te salve, José, lleno de la gracia divina...", count: 10, type: "bead", mysteryIndex: 4 },
-            { name: "Gloria", text: "Gloria al Padre, y al Hijo, y al Espíritu Santo...", type: "decade-end" },
-            // Oraciones finales
-            { name: "Letanías a San José", text: "Señor, ten piedad de nosotros. Cristo, ten piedad de nosotros. Señor, ten piedad de nosotros. Cristo, óyenos. Cristo, escúchanos. (Continúa la oración...).", type: "final" },
-            { name: "Oración a San José", text: "Oh Dios, que en tu inefable providencia, te dignaste elegir a San José para ser el esposo de tu santísima Madre, te rogamos nos concedas que, al venerarlo como protector, merezcamos tenerlo como intercesor en el cielo. Amén.", type: "final" },
-            { name: "Final", text: "El Rosario a San José ha sido completado. Gracias por orar.", type: "end" }
-        ];
+ const productCatalog = [   
 
-        // Oraciones para la Coronilla de la Divina Misericordia
-        const divineMercyPrayers = [
-            { name: "La Señal de la Cruz", text: "En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén.", type: "start" },
-            { name: "El Padre Nuestro", text: "Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada día; perdona nuestras ofensas, como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación, y líbranos del mal. Amén.", type: "intro" },
-            { name: "El Ave María", text: "Dios te salve, María, llena eres de gracia; el Señor es contigo; bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.", type: "intro" },
-            { name: "El Credo de los Apóstoles", text: "Creo en Dios, Padre todopoderoso, Creador del cielo y de la tierra.\n\nCreo en Jesucristo, su único Hijo, Señor nuestro, que fue concebido por obra y gracia del Espíritu Santo, nació de Santa María Virgen, padeció bajo el poder de Poncio Pilato, fue crucificado, muerto y sepultado, descendió a los infiernos, al tercer día resucitó de entre los muertos, subió a los cielos y está sentado a la derecha de Dios, Padre todopoderoso. Desde allí ha de venir a juzgar a vivos y muertos.\n\nCreo en el Espíritu Santo, la santa Iglesia católica, la comunión de los santos, el perdón de los pecados, la resurrección de la carne y la vida eterna. Amén.", type: "intro" },
-            // Oración por las cuentas grandes
-            { name: "El Padre Eterno", text: "Padre Eterno, te ofrezco el Cuerpo y la Sangre, el Alma y la Divinidad de tu amadísimo Hijo, Nuestro Señor Jesucristo, como propiciación por nuestros pecados y los del mundo entero.", type: "decade-start" },
-            // Primer misterio (10 cuentas)
-            { name: "Por su dolorosa Pasión", text: "Por su dolorosa Pasión, ten misericordia de nosotros y del mundo entero.", count: 10, type: "bead" },
-            // Oración por las cuentas grandes
-            { name: "El Padre Eterno", text: "Padre Eterno, te ofrezco el Cuerpo y la Sangre, el Alma y la Divinidad de tu amadísimo Hijo, Nuestro Señor Jesucristo, como propiciación por nuestros pecados y los del mundo entero.", type: "decade-start" },
-            // Segundo misterio (10 cuentas)
-            { name: "Por su dolorosa Pasión", text: "Por su dolorosa Pasión, ten misericordia de nosotros y del mundo entero.", count: 10, type: "bead" },
-            // Oración por las cuentas grandes
-            { name: "El Padre Eterno", text: "Padre Eterno, te ofrezco el Cuerpo y la Sangre, el Alma y la Divinidad de tu amadísimo Hijo, Nuestro Señor Jesucristo, como propiciación por nuestros pecados y los del mundo entero.", type: "decade-start" },
-            // Tercer misterio (10 cuentas)
-            { name: "Por su dolorosa Pasión", text: "Por su dolorosa Pasión, ten misericordia de nosotros y del mundo entero.", count: 10, type: "bead" },
-            // Oración por las cuentas grandes
-            { name: "El Padre Eterno", text: "Padre Eterno, te ofrezco el Cuerpo y la Sangre, el Alma y la Divinidad de tu amadísimo Hijo, Nuestro Señor Jesucristo, como propiciación por nuestros pecados y los del mundo entero.", type: "decade-start" },
-            // Cuarto misterio (10 cuentas)
-            { name: "Por su dolorosa Pasión", text: "Por su dolorosa Pasión, ten misericordia de nosotros y del mundo entero.", count: 10, type: "bead" },
-            // Oración por las cuentas grandes
-            { name: "El Padre Eterno", text: "Padre Eterno, te ofrezco el Cuerpo y la Sangre, el Alma y la Divinidad de tu amadísimo Hijo, Nuestro Señor Jesucristo, como propiciación por nuestros pecados y los del mundo entero.", type: "decade-start" },
-            // Quinto misterio (10 cuentas)
-            { name: "Por su dolorosa Pasión", text: "Por su dolorosa Pasión, ten misericordia de nosotros y del mundo entero.", count: 10, type: "bead" },
-            // Oración final
-            { name: "La Trinidad", text: "Santo Dios, Santo Fuerte, Santo Inmortal, ten piedad de nosotros y del mundo entero. (x3)", type: "final" },
-            { name: "Oh Sangre y Agua", text: "Oh Sangre y Agua que brotaste del Corazón de Jesús como fuente de misericordia para nosotros, en Ti confío.", type: "final" },
-            { name: "Final", text: "Jesús, en Ti confío. La Coronilla ha sido completada. Gracias por orar.", type: "end" }
-        ];
-        
-        // Oraciones Comunes
-        const commonPrayers = [
-            { title: "La Señal de la Cruz", text: "En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén." },
-            { title: "El Credo", text: "Creo en Dios, Padre todopoderoso, Creador del cielo y de la tierra.\n\nCreo en Jesucristo, su único Hijo, Señor nuestro, que fue concebido por obra y gracia del Espíritu Santo, nació de Santa María Virgen, padeció bajo el poder de Poncio Pilato, fue crucificado, muerto y sepultado, descendió a los infiernos, al tercer día resucitó de entre los muertos, subió a los cielos y está sentado a la derecha de Dios, Padre todopoderoso. Desde allí ha de venir a juzgar a vivos y muertos.\n\nCreo en el Espíritu Santo, la santa Iglesia católica, la comunión de los santos, el perdón de los pecados, la resurrección de la carne y la vida eterna. Amén." },
-            { title: "Padre Nuestro", text: "Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada día; perdona nuestras ofensas, como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación, y líbranos del mal. Amén." },
-            { title: "Ave María", text: "Dios te salve, María, llena eres de gracia; el Señor es contigo; bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén." },
-            { title: "Gloria", text: "Gloria al Padre, y al Hijo, y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén." },
-            { title: "Acto de Contrición", text: "Señor mío, Jesucristo, Dios y Hombre verdadero, Creador, Padre y Redentor mío, por ser Vos quien sois, Bondad infinita, y porque os amo sobre todas las cosas, me pesa de todo corazón haberos ofendido; también me pesa porque podéis castigarme con las penas del infierno. Ayudado de vuestra divina gracia, propongo firmemente nunca más pecar, confesarme y cumplir la penitencia que me fuere impuesta. Amén." },
-            { title: "Oración a San Miguel Arcángel", text: "San Miguel Arcángel, defiéndenos en la batalla. Sé nuestro amparo contra la perversidad y acechanzas del demonio. Reprímale Dios, pedimos suplicantes, y tú, Príncipe de la Milicia Celestial, arroja al infierno con el divino poder a Satanás, y a los otros espíritus malignos que andan dispersos por el mundo para la perdición de las almas. Amén." },
-            { title: "Bajo tu amparo", text: "Bajo tu amparo nos acogemos, Santa Madre de Dios; no desprecies las súplicas que te dirigimos en nuestras necesidades; antes bien, líbranos de todo peligro, ¡oh Virgen gloriosa y bendita! Amén." },
-            { title: "Dulce Madre", text: "Dulce Madre, no te alejes, tu vista de mí no apartes. Ven conmigo a todas partes y solo nunca me dejes. Ya que me proteges tanto como verdadera Madre, haz que me bendiga el Padre, el Hijo y el Espíritu Santo. Amén." },
-            { title: "La Magníficat", text: "Proclama mi alma la grandeza del Señor, se alegra mi espíritu en Dios mi Salvador; porque ha mirado la humildad de su esclava. Desde ahora me felicitarán todas las generaciones, porque el Poderoso ha hecho obras grandes en mí: Su nombre es santo, y su misericordia llega a sus fieles de generación en generación. Él hace proezas con su brazo: dispersa a los soberbios de corazón, derriba del trono a los poderosos y enaltece a los humildes, a los hambrientos los colma de bienes y a los ricos los despide vacíos. Auxilia a Israel, su siervo, acordándose de la misericordia, como lo había prometido a nuestros padres en favor de Abrahán y su descendencia para siempre. Gloria al Padre, al Hijo y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén." },
-            { title: "Cántico de Zacarías (Benedictus)", text: "Bendito sea el Señor, Dios de Israel, porque ha visitado y redimido a su pueblo. Ha suscitado una fuerza de salvación en la casa de David, su siervo, según lo había prometido por boca de sus santos profetas de antiguo. Nos ha salvado de nuestros enemigos y de la mano de todos los que nos odian. Ha hecho misericordia con nuestros padres y se ha acordado de su santa Alianza y del juramento que juró a nuestro padre Abraham. Nos concedió que, liberados de la mano de nuestros enemigos, le sirvamos sin temor, con santidad y justicia en su presencia, todos nuestros días. Y a ti, niño, te llamarán Profeta del Altísimo, porque irás delante del Señor a preparar sus caminos, anunciando a su pueblo la salvación por el perdón de sus pecados. Por la entrañable misericordia de nuestro Dios, nos visitará el sol que nace de lo alto para iluminar a los que viven en tinieblas y en sombra de muerte, para guiar nuestros pasos por el camino de la paz. Gloria al Padre, y al Hijo, y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén."}
-        ];
+  // --- SISTEMAS DE COCINA INNOVE ---
+  { sku: 'CO9245', name: 'Sistema de Cocina Complem. de 5 Pzs Innove', price: 111000, category: 'Sistemas de Cocina Innove' },
+  { sku: 'CO9247', name: 'Sistema de Cocina Complem. de 5 Pzs Innove + Perfect Pop s. tapa', price: 119200, category: 'Sistemas de Cocina Innove' },
+  { sku: 'CO9248', name: 'Sist. de Cocina Complementario de 5 Pzs Innove + Tapa Grand. 26cm', price: 125500, category: 'Sistemas de Cocina Innove' },
+  { sku: 'Kit001', name: 'Sistema de Cocina Complem. de 5 Pzs Innove + Perfect Pop', price: 133700, category: 'Sistemas de Cocina Innove' },
+  { sku: 'CO9253', name: 'Sistema de Cocina Clasico de 7 Pzs Innove', price: 137500, category: 'Sistemas de Cocina Innove' },
+  { sku: 'CO9255', name: 'Sist. de Cocina Clasico de 7 Pzs Innove + Tapa Med. 20 Cm', price: 150000, category: 'Sistemas de Cocina Innove' },
+  { sku: 'CO9254', name: 'Sistema de Cocina Especial de 8 Pzs Innove', price: 168500, category: 'Sistemas de Cocina Innove' },
+  { sku: 'CO9261', name: 'Sistema de Cocina Familiar de 10 Pzs Innove + Perfect Pop', price: 215000, category: 'Sistemas de Cocina Innove' },
+  { sku: 'CO9262', name: 'Sist. de Cocina Familiar de 10 Pzs Innove + Perfect Pop + Tapa Med. 20 Cm', price: 227500, category: 'Sistemas de Cocina Innove' },
 
-        // Función para generar la lista completa de oraciones del rosario
-        function generateRosaryPrayers(mysteryData) {
-            let prayers = [
-                { name: "La Señal de la Cruz", text: "En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén.", type: "start" },
-                { name: "El Credo de los Apóstoles", text: "Creo en Dios, Padre Todopoderoso, Creador del cielo y de la tierra.\n\nCreo en Jesucristo, su único Hijo, Señor nuestro, que fue concebido por obra y gracia del Espíritu Santo, nació de Santa María Virgen; padeció bajo el poder de Poncio Pilato, fue crucificado, muerto y sepultado, descendió a los infiernos; al tercer día resucitó de entre los muertos; subió a los cielos y está sentado a la derecha de Dios Padre; desde allí ha de venir a juzgar a vivos y muertos.\n\nCreo en el Espíritu Santo, la Santa Iglesia Católica, la comunión de los santos, el perdón de los pecados, la resurrección de la carne y la vida eterna. Amén.", type: "intro" },
-                { name: "Padre Nuestro", text: "Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada día; perdona nuestras ofensas, como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación, y líbranos del mal. Amén.", type: "intro" },
-                { name: "Ave María", text: "Dios te salve, María, llena eres de gracia; el Señor es contigo; bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.", count: 3, type: "intro" },
-                { name: "Gloria al Padre", text: "Gloria al Padre, y al Hijo, y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.", type: "intro" },
-                { name: "Oración de Fátima", text: "Oh Jesús mío, perdona nuestros pecados, líbranos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las más necesitadas de tu misericordia.", type: "intro" },
-            ];
-            
-            // Añadir los misterios y décadas dinámicamente
-            mysteryData.mysteries.forEach((mystery, index) => {
-                prayers.push(
-                    { name: "Anuncio del Misterio", text: mystery.description, type: "mystery-intro", mysteryIndex: index },
-                    { name: "Padre Nuestro", text: "Padre nuestro, que estás en el cielo, santificado sea tu Nombre; venga a nosotros tu reino; hágase tu voluntad en la tierra como en el cielo. Danos hoy nuestro pan de cada día; perdona nuestras ofensas, como también nosotros perdonamos a los que nos ofenden; no nos dejes caer en la tentación, y líbranos del mal. Amén.", type: "decade-start", mysteryIndex: index },
-                    { name: "Ave María", text: "Dios te salve, María, llena eres de gracia; el Señor es contigo; bendita tú eres entre todas las mujeres, y bendito es el fruto de tu vientre, Jesús. Santa María, Madre de Dios, ruega por nosotros, pecadores, ahora y en la hora de nuestra muerte. Amén.", count: 10, type: "bead", mysteryIndex: index },
-                    { name: "Gloria al Padre", text: "Gloria al Padre, y al Hijo, y al Espíritu Santo. Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén.", type: "decade-end" },
-                    { name: "Oración de Fátima", text: "Oh Jesús mío, perdona nuestros pecados, líbranos del fuego del infierno, lleva al cielo a todas las almas, especialmente a las más necesitadas de tu misericordia.", type: "decade-end" }
-                );
-            });
+  // --- PIEZAS INDIVIDUALES (OLLAS Y SARTENES) ---
+  { sku: 'CO9201', name: 'Olla Innove de 2 Qt. (Sin Tapa)', price: 20000, category: 'Piezas Individuales' },
+  { sku: 'CO9202T', name: 'Olla Innove de 2 Qt. (Con Tapa)', price: 31500, category: 'Piezas Individuales' },
+  { sku: 'CO9203', name: 'Olla Innove de 3 Qt. (Sin Tapa)', price: 26500, category: 'Piezas Individuales' },
+  { sku: 'CO9204T', name: 'Olla Innove de 3 Qt. (Con Tapa)', price: 39000, category: 'Piezas Individuales' },
+  { sku: 'CO9205', name: 'Olla Innove de 4 Qt. (Sin Tapa)', price: 26700, category: 'Piezas Individuales' },
+  { sku: 'CO9236', name: 'Olla Innove de 4 Qt. (Con Tapa)', price: 39800, category: 'Piezas Individuales' },
+  { sku: 'CO9207', name: 'Olla Innove de 6 Qt. (Sin Tapa)', price: 32500, category: 'Piezas Individuales' },
+  { sku: 'CO9209', name: 'Olla Innove de 8 Qt. (Sin Tapa)', price: 35000, category: 'Piezas Individuales' },
+  { sku: 'CO9237', name: 'Olla Innove de 8 Qt. (Con Tapa)', price: 48000, category: 'Piezas Individuales' },
+  { sku: 'CO9211', name: 'Sarten Innove de 8" (Sin Tapa)', price: 26500, category: 'Piezas Individuales' },
+  { sku: 'CO9212T', name: 'Sarten Innove de 8" (Con Tapa)', price: 39000, category: 'Piezas Individuales' },
+  { sku: 'CO9213', name: 'Sarten Innove de 10.5" / 4QT (Sin Tapa)', price: 33500, category: 'Piezas Individuales' },
+  { sku: 'CO9214T', name: 'Sarten Innove de 10.5" / 4QT (Con Tapa)', price: 48000, category: 'Piezas Individuales' },
+  { sku: 'CO9230', name: 'Sarten Gourmet Innove 8" / 20cm (Con Tapa)', price: 24000, category: 'Piezas Individuales' },
+  { sku: 'CO9232', name: 'Sarten Gourmet Innove 10" / 25cm (Con Tapa)', price: 29000, category: 'Piezas Individuales' },
+  { sku: 'CO9234', name: 'Sarten Gourmet Innove 12" / 30cm (Con Tapa)', price: 41000, category: 'Piezas Individuales' },
+  { sku: 'CO9265', name: 'Juego de Sartenes Gourmet Innove de 6 pzs', price: 91000, category: 'Piezas Individuales' },
+  { sku: 'CO9222', name: 'Wok con Tapa Innove', price: 41000, category: 'Piezas Individuales' },
+  { sku: 'CO9217', name: 'Paellera Innove de 10" con tapa 316L', price: 35500, category: 'Piezas Individuales' },
+  { sku: 'CO9215', name: 'Paellera Innove de 14" con tapa 316L', price: 58000, category: 'Piezas Individuales' },
+  { sku: 'CO6589', name: 'Pavera Ovalada Royal Prestige', price: 55000, category: 'Piezas Individuales' },
+  { sku: 'PR2614', name: 'Maquina para Ensaladas Royal Prestige', price: 54000, category: 'Piezas Individuales' },
+  { sku: 'CO9218', name: 'Plancha Doble Acero Innove 316L', price: 28000, category: 'Piezas Individuales' },
+  { sku: 'CO9219', name: 'Plancha Redonda Innove 316L', price: 26000, category: 'Piezas Individuales' },
+  { sku: 'CO9220', name: 'Plancha Cuadrada sencilla Innove 316L', price: 22500, category: 'Piezas Individuales' },
+  { sku: 'CO1251', name: 'Nueva Olla Presion de 6 Litros', price: 53500, category: 'Piezas Individuales' },
+  { sku: 'CO1255', name: 'Nueva Olla Presion de 10 Litros', price: 63000, category: 'Piezas Individuales' },
+  { sku: 'CO9076', name: 'Colador Pequeño Innove de 20 cm.', price: 14800, category: 'Piezas Individuales' },
+  { sku: 'CO9080', name: 'Colador Grande Innove de 26 cm.', price: 16800, category: 'Piezas Individuales' },
 
-            // Añadir las oraciones finales
-            prayers.push(
-                { name: "La Salve", text: "Dios te salve, Reina y Madre de misericordia, vida, dulzura y esperanza nuestra, Dios te salve. A Ti clamamos los desterrados hijos de Eva; a Ti suspiramos, gimiendo y llorando en este valle de lágrimas. Ea, pues, Señora, abogada nuestra, vuelve a nosotros esos tus ojos misericordiosos; y después de este destierro, muéstranos a Jesús, fruto bendito de tu vientre. ¡Oh clementísima, oh piadosa, oh dulce siempre Virgen María! Ruega por nosotros, Santa Madre de Dios, para que seamos dignos de alcanzar las promesas de Nuestro Señor Jesucristo. Amén.", type: "final" },
-                { name: "Oración Final", text: "Oh Dios, cuyo Unigénito Hijo, con su vida, muerte y resurrección nos ha merecido los premios de la salvación eterna, te rogamos nos concedas que, al meditar estos misterios del Santísimo Rosario de la Virgen María, imitemos lo que contienen y alcancemos lo que prometen. Por Cristo nuestro Señor. Amén.", type: "final" },
-                { name: "Final", text: "El Santo Rosario ha sido completado. Gracias por orar.", type: "end" }
-            );
+  // --- LÍNEA SANCOCHO ---
+  { sku: 'CO9224', name: 'Olla Innove de 12 Qt. c/tapa Sancocho Peq.', price: 53000, category: 'Sancocho' },
+  { sku: 'CO9226', name: 'Olla Innove de 20 Qt. c/tapa Sancocho Med.', price: 65000, category: 'Sancocho' },
+  { sku: 'CO9228', name: 'Olla Innove 30 QT/38 cm c/tapa Sancocho Grand.', price: 80000, category: 'Sancocho' },
 
-            return prayers;
-        }
+  // --- CAFE / TE / CHOCOLATE ---
+  { sku: 'CO2106', name: 'Cafetera Royal Prestige Barista', price: 42000, category: 'Cafe / Te / Chocolate' },
+  { sku: 'PR2134', name: 'Kit Completo Baristart', price: 5300, category: 'Cafe / Te / Chocolate' },
+  { sku: 'CO0801', name: 'Royal Prestige Expertea', price: 38500, category: 'Cafe / Te / Chocolate' },
+  { sku: 'PR2129', name: 'Cafetera RP (Greca) Royal Espresso 10 Tazas', price: 17000, category: 'Cafe / Te / Chocolate' },
+  { sku: 'PR2120', name: 'Cafetera RP (Greca) Royal Espresso 4 Tazas', price: 14000, category: 'Cafe / Te / Chocolate' },
+  { sku: 'CO0101', name: 'Chocolatera RP', price: 26000, category: 'Cafe / Te / Chocolate' },
 
-        // Elementos del DOM
-        const mainTitleElem = document.getElementById('main-title');
-        const startScreen = document.getElementById('start-screen');
-        const prayerScreen = document.getElementById('prayer-screen');
-        const progressContainer = document.getElementById('progress-container');
-        const controls = document.getElementById('controls');
-        const inProgressControls = document.getElementById('in-progress-controls');
-        const mysteryGuide = document.getElementById('mystery-guide');
-        const beadContainer = document.getElementById('bead-container');
-        const commonPrayersScreen = document.getElementById('common-prayers-screen');
-        const prayersListElem = document.getElementById('prayers-list');
-        const singlePrayerScreen = document.getElementById('single-prayer-screen');
-        const singlePrayerTitleElem = document.getElementById('single-prayer-title');
-        const singlePrayerTextElem = document.getElementById('single-prayer-text');
-        
-        const mysteryTitleElem = document.getElementById('current-mystery-title');
-        const mysteryDescriptionElem = document.getElementById('current-mystery-description');
-        const prayerTextElem = document.getElementById('current-prayer-text');
-        const stationTextElem = document.getElementById('station-text');
-        const stopContinueButton = document.getElementById('stop-continue-button');
-        const backButton = document.getElementById('back-button'); // Nuevo botón de retroceso
-        const forwardButton = document.getElementById('forward-button'); // Nuevo botón de avance
-        const resetButton = document.getElementById('reset-button');
-        const counterElem = document.getElementById('counter');
-        const progressBar = document.getElementById('progress-bar');
-        const playCommonPrayerButton = document.getElementById('play-common-prayer-button'); // Nuevo botón de reproducir
-        const backToHomeButton = document.getElementById('back-to-home-button'); // Nuevo botón para volver al inicio
-        
-        let currentPrayerIndex = 0;
-        let currentBeadCount = 0;
-        let currentMystery;
-        let speechActive = false;
-        let isAngelusMode = false;
-        let isJoseRosaryMode = false;
-        let isDivineMercyMode = false; // Nueva variable para la Coronilla
-        let currentPrayerList = [];
-        let currentCommonPrayerText = "";
+  // --- ELECTRODOMESTICOS ---
+  { sku: 'ES0003', name: 'Power Blender C/ Recetario - Licuadora', price: 110000, category: 'Electrodomesticos' },
+  { sku: 'ES3101', name: 'Precision Cook Estufa Induccion', price: 67000, category: 'Electrodomesticos' },
 
-        // Función para crear las cuentas del rosario
-        function createBeads() {
-            beadContainer.innerHTML = '';
-            for (let i = 0; i < 10; i++) {
-                const bead = document.createElement('div');
-                bead.classList.add('bead', 'bg-blue-200'); // Cuentas no rezadas
-                beadContainer.appendChild(bead);
-            }
-        }
-        
-        // Función para actualizar el color de la cuenta actual
-        function updateBeadColor() {
-            const beads = beadContainer.children;
-            // Primero, aseguramos que todas las cuentas completadas están en azul oscuro
-            for(let i = 0; i < currentBeadCount; i++) {
-                if (beads[i]) {
-                    beads[i].classList.remove('bg-blue-200');
-                    beads[i].classList.add('bg-blue-600');
-                }
-            }
-            // Luego, aseguramos que las cuentas restantes están en azul claro
-            for(let i = currentBeadCount; i < beads.length; i++) {
-                if (beads[i]) {
-                    beads[i].classList.remove('bg-blue-600');
-                    beads[i].classList.add('bg-blue-200');
-                }
-            }
-        }
+  // --- EXTRACTOR DE JUGOS ---
+  { sku: 'JU0026', name: 'Extractor de Jugos de Royal Prestige', price: 115000, category: 'Extractor de Jugos' },
+  { sku: 'PR1459', name: 'Exprimidor de (Citricos) Jugo Royal Prestige', price: 9000, category: 'Extractor de Jugos' },
+  { sku: 'PR1460', name: '3 Coladores Extractor Jugo RP', price: 18500, category: 'Extractor de Jugos' },
 
-        // Función para hablar el texto de la oración
-        function speakPrayer(text, autoAdvance = false) {
-            if (!speechActive) return;
+  // --- CUCHILLERIA ---
+  { sku: 'CU0800', name: 'Precision Basico 5 pzs Serie III', price: 23000, category: 'Cuchilleria' },
+  { sku: 'CU0815', name: 'Precision para Rebanar 4 pzs Serie III', price: 18000, category: 'Cuchilleria' },
+  { sku: 'CU0820', name: 'Precision para Carne 4 pzs Serie III', price: 12000, category: 'Cuchilleria' },
+  { sku: 'CU0831', name: 'Juego completo Precision Serie III', price: 82000, category: 'Cuchilleria' },
 
-            if ('speechSynthesis' in window) {
-                const speech = new SpeechSynthesisUtterance(text);
-                speech.lang = 'es-ES';
-                speech.rate = 0.9;
-                
-                if (autoAdvance) {
-                    speech.onend = () => {
-                        if (speechActive) {
-                            nextPrayer();
-                        }
-                    };
-                }
-                
-                window.speechSynthesis.cancel();
-                window.speechSynthesis.speak(speech);
-            } else {
-                console.log('Tu navegador no soporta la API de síntesis de voz.');
-            }
-        }
-        
-        // Lógica para avanzar en las oraciones
-        function nextPrayer() {
-            const prayer = currentPrayerList[currentPrayerIndex];
-            
-            // Lógica para las oraciones que tienen repeticiones (ej. Ave María, 10 cuentas)
-            if (prayer.count) {
-                currentBeadCount++;
-                if (prayer.type === 'bead') {
-                    updateBeadColor();
-                }
+  // --- FILTRACION Y PURIFICACION ---
+  { sku: 'AP2101', name: 'Purificador de Aire Earth+ C/Cable', price: 90000, category: 'Filtracion y Purificacion' },
+  { sku: 'PR0003', name: 'Filtro de Ducha Frescapure', price: 25000, category: 'Filtracion y Purificacion' },
+  { sku: 'WF0080', name: 'Seis (6) Cartuchos Filtro Ducha', price: 24000, category: 'Filtracion y Purificacion' },
+  { sku: 'WF0075', name: 'Dos (2) Cartuchos Filtro Ducha', price: 9000, category: 'Filtracion y Purificacion' },
+  { sku: 'AP2004', name: 'Cartuchos de Reemplazo Earth+', price: 21000, category: 'Filtracion y Purificacion' },
 
-                // Verifica si la repetición de la oración ha terminado
-                if (currentBeadCount < prayer.count) {
-                    updateUIAndSpeak();
-                    return;
-                }
-            }
-            
-            // Si la oración no tiene repeticiones o si la repetición ha terminado, avanza a la siguiente
-            currentBeadCount = 0;
-            currentPrayerIndex++;
+  // --- ACCESORIOS INNOVE (AROS Y TAPAS) ---
+  { sku: 'SP0420', name: 'Aro 16 cm. y ventana Innove', price: 1700, category: 'Accesorios Innove' },
+  { sku: 'SP0430', name: 'Aro 20 cm. y ventana Innove', price: 1800, category: 'Accesorios Innove' },
+  { sku: 'SP0440', name: 'Aro 26 cm. y ventana Innove', price: 2200, category: 'Accesorios Innove' },
+  { sku: 'SP0450', name: 'Aro 30 cm. y ventana Innove', price: 2400, category: 'Accesorios Innove' },
+  { sku: 'SP0460', name: 'Aro 35 cm. y ventana Innove', price: 2800, category: 'Accesorios Innove' },
+  { sku: 'SP0470', name: 'Aro 38 cm. y ventana Innove', price: 3000, category: 'Accesorios Innove' },
+  { sku: 'SP0488', name: 'Aros para tapas Altas Innove', price: 2000, category: 'Accesorios Innove' },
+  { sku: 'CO9085', name: 'Tapa Pequeña Innove de 16 cm.', price: 11500, category: 'Tapas' },
+  { sku: 'CO9086', name: 'Tapa Mediana Innove de 20 cm.', price: 12500, category: 'Tapas' },
+  { sku: 'CO9087', name: 'Tapa Grande Innove de 26 cm.', price: 14500, category: 'Tapas' },
+  { sku: 'CO9088', name: 'Tapa Alta Innove de 26 cm.', price: 27000, category: 'Tapas' },
 
-            updateUIAndSpeak();
-        }
+  // --- ACCESORIOS GENERALES ---
+  { sku: 'PR0025', name: 'Perfect Pop (Palomitas)', price: 8000, category: 'Accesorios' },
+  { sku: 'PR1675', name: 'Hervidor de 1/2 Qt- 5 Capas Mango Negro', price: 8500, category: 'Accesorios' },
+  { sku: 'PR1685', name: 'Hervidor de 1 Qt- 5 Capas Mango Negro', price: 9500, category: 'Accesorios' },
+  { sku: 'SP0145', name: 'Recipiente / Organizador para Utensilios', price: 2500, category: 'Accesorios' },
+  { sku: 'PR0196', name: 'Utensilios de Cocina de 6 pzs', price: 10700, category: 'Accesorios' },
+  { sku: 'SP0135', name: 'Juego de 4 Tazas Con Pared de Doble', price: 6500, category: 'Accesorios' },
+  { sku: 'SP0136', name: 'Juego de 2 Tazas 16 oz. con Pared Doble', price: 5000, category: 'Accesorios' },
 
-        // Función para retroceder en la oración
-        function previousPrayerManual() {
-            window.speechSynthesis.cancel();
-            speechActive = false;
-            stopContinueButton.textContent = "Continuar";
-            
-            // Retrocede el índice, asegurando que no baje de 0
-            if (currentPrayerIndex > 0) {
-                currentPrayerIndex--;
-            }
-            // Reinicia el contador de cuentas
-            currentBeadCount = 0;
-            updateUIAndSpeak();
-        }
+  // --- REGALOS ---
+  { sku: 'PR2134G', name: 'Kit Completo Barista RT (REGALO)', price: 5000, category: 'Regalo' },
+  { sku: 'N/A', name: 'Kit Baristart (REGALO)', price: 5000, category: 'Regalo' },
+  { sku: 'PR0552', name: 'Tabla Bambú Pequeña (REGALO)', price: 6500, category: 'Regalo' },
+  { sku: 'N/A', name: 'Cuchillo Multiuso (REGALO)', price: 6700, category: 'Regalo' },
+  { sku: 'CO9242', name: 'Perfect Pop (REGALO)', price: 8000, category: 'Regalo' },
+  { sku: 'N/A', name: 'Hacha de Cocina (REGALO)', price: 8000, category: 'Regalo' },
+  { sku: 'PR0551', name: 'Tabla Bambú Grande (REGALO)', price: 8200, category: 'Regalo' },
+  { sku: 'N/A', name: 'Hervidor 1/2 QT / 0.47 Lts (REGALO)', price: 8500, category: 'Regalo' },
+  { sku: 'N/A', name: 'Cubiertos Americana 24 Pzs (REGALO)', price: 9000, category: 'Regalo' },
+  { sku: 'N/A', name: 'Hervidor 1 QT / 0.94 Lts (REGALO)', price: 9500, category: 'Regalo' },
+  { sku: 'PR0196G', name: 'Juego de Utensilios - 6 Pzas (REGALO)', price: 10700, category: 'Regalo' },
+  { sku: 'PR2120', name: 'Cafetera Espresso 4 Tzs (REGALO)', price: 14000, category: 'Regalo' },
+  { sku: 'N/A', name: 'Cacerola Royal Prestige (REGALO)', price: 14000, category: 'Regalo' },
+  { sku: 'N/A', name: 'Juego 4 Tazones Mezcladores (REGALO)', price: 14500, category: 'Regalo' },
+  { sku: 'N/A', name: 'Colador Pequeño 20 cm (REGALO)', price: 14800, category: 'Regalo' },
+  { sku: 'N/A', name: 'Colador Grande 26 cm (REGALO)', price: 16800, category: 'Regalo' },
+  { sku: 'PR2129', name: 'Cafetera Espresso 10 Tzs Doble Pared (REGALO)', price: 17000, category: 'Regalo' }
+];   
+    // ... (El resto del codigo JavaScript se mantiene igual que la version anterior)
+    const productList = document.getElementById('product-list');
+    const quoteItemsDisplay = document.getElementById('quote-items');
+    const subtotalDisplay = document.getElementById('subtotal-display');
+    const discountPercentageInput = document.getElementById('discount-percentage');
+    const discountAmountDisplay = document.getElementById('discount-amount-display');
+    const totalDisplay = document.getElementById('total-display');
+    const interestRateInput = document.getElementById('interest-rate');
+    const initialPaymentInput = document.getElementById('initial-payment');
+    const initialPaymentPercentDisplay = document.getElementById('initial-payment-percent-display');
+    const amountFinancedDisplay = document.getElementById('amount-financed-display');
+    const monthlyPaymentDisplay = document.getElementById('monthly-payment-display');
+    const emptyQuoteMessage = document.getElementById('empty-quote-message');
+    const categoryFilter = document.getElementById('category-filter');
+    const searchInput = document.getElementById('product-search');
+    const clearQuoteButton = document.getElementById('clear-quote-button');
+    const giftTotalDisplay = document.getElementById('gift-total-display');
+    const giftMaxDisplay = document.getElementById('gift-max-display');
+    const giftWarningMessage = document.getElementById('gift-warning-message');
+    const initialPaymentWarning = document.getElementById('initial-payment-warning');
+    const customTermInput = document.getElementById('custom-term');
 
-        // Función para avanzar a la siguiente oración manualmente
-        function nextPrayerManual() {
-            window.speechSynthesis.cancel();
-            speechActive = false;
-            stopContinueButton.textContent = "Continuar";
-
-            // Avanza el índice, asegurando que no exceda el límite
-            if (currentPrayerIndex < currentPrayerList.length - 1) {
-                currentPrayerIndex++;
-            }
-            // Reinicia el contador de cuentas
-            currentBeadCount = 0;
-            updateUIAndSpeak();
-        }
-
-        // Función para actualizar la UI y hablar
-        function updateUIAndSpeak() {
-            if (currentPrayerIndex >= currentPrayerList.length) {
-                const finalMessage = isDivineMercyMode ? "¡Coronilla de la Divina Misericordia completada! Gracias por orar." : isJoseRosaryMode ? "¡Rosario a San José completado! Gracias por orar." : isAngelusMode ? "¡Ángelus completado! Gracias por orar." : "¡Rosario completado! Gracias por orar.";
-                prayerTextElem.textContent = finalMessage;
-                counterElem.textContent = "";
-                progressBar.style.width = `100%`;
-                speechActive = false;
-                inProgressControls.classList.remove('hidden');
-                stopContinueButton.classList.add('hidden');
-                resetButton.classList.remove('hidden');
-                beadContainer.classList.add('hidden');
-                return;
-            }
-
-            const prayer = currentPrayerList[currentPrayerIndex];
-            
-            // Lógica para el rosario tradicional y San José
-            if (!isAngelusMode && !isDivineMercyMode) {
-                // Si es el inicio de una década o el anuncio del misterio
-                if (prayer.type === 'decade-start' || prayer.type === 'mystery-intro') {
-                    const mysteryIndex = prayer.mysteryIndex;
-                    mysteryTitleElem.textContent = isJoseRosaryMode ? "Rosario a San José" : currentMystery.name;
-                    mysteryDescriptionElem.textContent = prayer.name.includes("Misterio") ? `${mysteryIndex + 1}º Misterio: ${prayer.name.split(': ')[1]}` : prayer.text;
-
-                    // Lógica para el Vía Crucis (solo en Misterios Dolorosos)
-                    if (currentMystery && currentMystery.name === "Misterios Dolorosos") {
-                        const stationIndex = mysteryIndex;
-                        stationTextElem.textContent = `Meditamos la estación del Vía Crucis ${stationIndex + 1}: ${viaCrucisStations[stationIndex]}.`;
-                        stationTextElem.classList.remove('hidden');
-                    } else {
-                        stationTextElem.classList.add('hidden');
-                    }
-                } else if (prayer.type === 'bead' || prayer.type === 'decade-end' || prayer.type === 'final' || prayer.type === 'start') {
-                    mysteryDescriptionElem.textContent = '';
-                    stationTextElem.classList.add('hidden');
-                }
-                
-                // Mostrar y ocultar las cuentas según el tipo de oración
-                if (prayer.type === 'bead') {
-                    createBeads(); // Asegura que las cuentas estén en el DOM antes de actualizarlas
-                    beadContainer.classList.remove('hidden');
-                    updateBeadColor(); // Actualiza el color al crear las cuentas
-                } else {
-                    beadContainer.classList.add('hidden');
-                }
-                
-                // Lógica del contador y barra de progreso
-                if (prayer.count) {
-                    const totalBeads = prayer.count;
-                    counterElem.textContent = `${currentBeadCount + 1} / ${totalBeads}`;
-                    const progress = ((currentBeadCount + 1) / totalBeads) * 100;
-                    progressBar.style.width = `${progress}%`;
-                    progressContainer.classList.remove('hidden');
-                } else {
-                    counterElem.textContent = "";
-                    progressBar.style.width = `0%`;
-                    progressContainer.classList.add('hidden');
-                }
-            } else if (isDivineMercyMode) { // Lógica para la Coronilla de la Divina Misericordia
-                 if (prayer.type === 'bead') {
-                    beadContainer.classList.remove('hidden');
-                    createBeads();
-                    updateBeadColor();
-                } else {
-                    beadContainer.classList.add('hidden');
-                }
-                // Lógica del contador y barra de progreso
-                if (prayer.count) {
-                    const totalBeads = prayer.count;
-                    counterElem.textContent = `${currentBeadCount + 1} / ${totalBeads}`;
-                    const progress = ((currentBeadCount + 1) / totalBeads) * 100;
-                    progressBar.style.width = `${progress}%`;
-                    progressContainer.classList.remove('hidden');
-                } else {
-                    counterElem.textContent = "";
-                    progressBar.style.width = `0%`;
-                    progressContainer.classList.add('hidden');
-                }
-            } else { // Lógica para el Ángelus
-                mysteryTitleElem.textContent = '';
-                mysteryDescriptionElem.textContent = '';
-                stationTextElem.classList.add('hidden');
-                beadContainer.classList.add('hidden');
-                progressContainer.classList.add('hidden');
-            }
-            
-            prayerTextElem.textContent = prayer.text;
-            
-            if (speechActive) {
-                speakPrayer(prayer.text, true);
-            }
-        }
-
-        // Función para iniciar el rezo para un día específico
-        function startPrayerForDay(day) {
-            isAngelusMode = false;
-            isJoseRosaryMode = false;
-            isDivineMercyMode = false;
-            currentMystery = mysteries[day];
-            currentPrayerList = generateRosaryPrayers(currentMystery);
-            currentPrayerIndex = 0;
-            currentBeadCount = 0;
-            
-            startScreen.classList.add('hidden');
-            prayerScreen.classList.remove('hidden');
-            progressContainer.classList.remove('hidden');
-            controls.classList.remove('hidden');
-            mainTitleElem.textContent = "El Santo Rosario";
-            
-            speechActive = true;
-            updateUIAndSpeak();
-        }
-
-        // Función para iniciar la oración del Ángelus
-        function startAngelusPrayer() {
-            isAngelusMode = true;
-            isJoseRosaryMode = false;
-            isDivineMercyMode = false;
-            currentPrayerList = angelusPrayers;
-            currentMystery = null;
-            currentPrayerIndex = 0;
-            currentBeadCount = 0;
-            
-            startScreen.classList.add('hidden');
-            prayerScreen.classList.remove('hidden');
-            progressContainer.classList.add('hidden');
-            controls.classList.remove('hidden');
-            mysteryGuide.classList.add('hidden');
-            mainTitleElem.textContent = "El Ángelus";
-            
-            speechActive = true;
-            updateUIAndSpeak();
-        }
-        
-        // Nueva función para iniciar el Rosario a San José
-        function startJoseRosary() {
-            isAngelusMode = false;
-            isJoseRosaryMode = true;
-            isDivineMercyMode = false;
-            currentPrayerList = joseRosaryPrayers;
-            currentMystery = null; // No aplica la misma lógica de misterios diarios
-            currentPrayerIndex = 0;
-            currentBeadCount = 0;
-            
-            startScreen.classList.add('hidden');
-            prayerScreen.classList.remove('hidden');
-            progressContainer.classList.remove('hidden');
-            controls.classList.remove('hidden');
-            mysteryGuide.classList.add('hidden');
-            mainTitleElem.textContent = "Rosario a San José";
-            
-            speechActive = true;
-            updateUIAndSpeak();
-        }
-        
-        // Nueva función para iniciar la Coronilla de la Divina Misericordia
-        function startDivineMercyChaplet() {
-            isAngelusMode = false;
-            isJoseRosaryMode = false;
-            isDivineMercyMode = true;
-            currentPrayerList = divineMercyPrayers;
-            currentMystery = null;
-            currentPrayerIndex = 0;
-            currentBeadCount = 0;
-
-            startScreen.classList.add('hidden');
-            prayerScreen.classList.remove('hidden');
-            progressContainer.classList.remove('hidden');
-            controls.classList.remove('hidden');
-            mysteryGuide.classList.add('hidden');
-            mainTitleElem.textContent = "Coronilla de la Divina Misericordia";
-
-            speechActive = true;
-            updateUIAndSpeak();
-        }
-        
-        // Función para mostrar las oraciones comunes
-        function showCommonPrayers() {
-            startScreen.classList.add('hidden');
-            commonPrayersScreen.classList.remove('hidden');
-            controls.classList.remove('hidden');
-            inProgressControls.classList.add('hidden');
-            resetButton.classList.remove('hidden');
-            mainTitleElem.textContent = "Oraciones Comunes";
-            
-            prayersListElem.innerHTML = '';
-            commonPrayers.forEach(prayer => {
-                const button = document.createElement('button');
-                button.classList.add('bg-green-400', 'text-white', 'font-semibold', 'py-3', 'px-6', 'rounded-full', 'transition', 'duration-300', 'transform', 'hover:scale-105', 'shadow-md', 'hover:shadow-lg', 'focus:outline-none', 'focus:ring-4', 'focus:ring-green-300', 'w-full');
-                button.textContent = prayer.title;
-                button.addEventListener('click', () => showSinglePrayer(prayer));
-                prayersListElem.appendChild(button);
-            });
-        }
-        
-        // Función para mostrar una sola oración común
-        function showSinglePrayer(prayer) {
-            commonPrayersScreen.classList.add('hidden');
-            singlePrayerScreen.classList.remove('hidden');
-            singlePrayerTitleElem.textContent = prayer.title;
-            singlePrayerTextElem.textContent = prayer.text;
-            controls.classList.remove('hidden');
-            inProgressControls.classList.add('hidden');
-            resetButton.classList.remove('hidden');
-            mainTitleElem.textContent = prayer.title;
-            
-            currentCommonPrayerText = prayer.text; // Guarda el texto para reproducirlo
-            playCommonPrayerButton.textContent = "Reproducir";
-            playCommonPrayerButton.classList.remove('hidden');
-            backToHomeButton.classList.remove('hidden');
-        }
-
-        // Función para reiniciar la aplicación y volver a la pantalla de selección de día
-        function resetApp() {
-            currentPrayerIndex = 0;
-            currentBeadCount = 0;
-            speechActive = false;
-            isAngelusMode = false;
-            isJoseRosaryMode = false;
-            isDivineMercyMode = false;
-            
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-            }
-
-            startScreen.classList.remove('hidden');
-            prayerScreen.classList.add('hidden');
-            commonPrayersScreen.classList.add('hidden');
-            singlePrayerScreen.classList.add('hidden');
-            progressContainer.classList.add('hidden');
-            controls.classList.add('hidden');
-            mysteryGuide.classList.remove('hidden');
-            stopContinueButton.textContent = "Detener";
-            mainTitleElem.textContent = "El Santo Rosario";
-        }
-
-        // Manejadores de eventos para los botones de día y Ángelus
-        document.querySelectorAll('.day-button').forEach(button => {
-            button.addEventListener('click', (event) => {
-                const day = event.target.dataset.day;
-                if (day) {
-                    startPrayerForDay(day);
-                }
-            });
-        });
-        document.getElementById('angelus-button').addEventListener('click', startAngelusPrayer);
-        document.getElementById('jose-rosary-button').addEventListener('click', startJoseRosary);
-        document.getElementById('divine-mercy-button').addEventListener('click', startDivineMercyChaplet);
-        document.getElementById('common-prayers-button').addEventListener('click', showCommonPrayers);
-        
-        // Manejadores de eventos para los botones de control
-        stopContinueButton.addEventListener('click', () => {
-            if (speechActive) {
-                speechActive = false;
-                window.speechSynthesis.cancel();
-                stopContinueButton.textContent = "Continuar";
-            } else {
-                speechActive = true;
-                stopContinueButton.textContent = "Detener";
-                // Llama a speakPrayer para continuar desde donde se detuvo
-                speakPrayer(currentPrayerList[currentPrayerIndex].text, true);
-            }
+    function renderProductList(searchTerm = '', category = '') {
+        productList.innerHTML = '';
+        const searchLower = searchTerm.toLowerCase().trim();
+        const filteredProducts = productCatalog.filter(product => {
+            const matchesSearch = product.name.toLowerCase().includes(searchLower) || product.sku.toLowerCase().includes(searchLower);
+            const matchesCategory = category === '' || product.category === category;
+            return matchesSearch && matchesCategory;
         });
 
-        resetButton.addEventListener('click', resetApp);
-        
-        // Manejadores para los nuevos botones de navegación
-        backButton.addEventListener('click', previousPrayerManual);
-        forwardButton.addEventListener('click', nextPrayerManual);
+        filteredProducts.forEach(product => {
+            const isGift = product.category === 'Regalo';
+            const priceValue = parseFloat(product.price) || 0;
+            const isSelected = quote.items.some(item => item.product.sku === product.sku);
 
-        // Manejador del botón de Reproducir para oraciones comunes
-        playCommonPrayerButton.addEventListener('click', () => {
-            if ('speechSynthesis' in window) {
-                const speech = new SpeechSynthesisUtterance(currentCommonPrayerText);
-                speech.lang = 'es-ES';
-                speech.rate = 0.9;
-                
-                window.speechSynthesis.cancel();
-                window.speechSynthesis.speak(speech);
-            } else {
-                console.log('Tu navegador no soporta la API de síntesis de voz.');
-            }
+            const productCard = document.createElement('div');
+            productCard.className = `flex items-center justify-between p-3 rounded-lg border shadow-sm hover:shadow-md transition duration-200 ${isGift ? 'bg-yellow-100 border-yellow-300' : 'bg-gray-50 border-gray-200'} ${isSelected ? 'product-card-selected' : ''}`;
+            productCard.innerHTML = `
+                <div class="flex flex-col">
+                    <span class="font-semibold text-gray-800">${product.name}</span>
+                    <span class="text-xs ${isGift ? 'text-yellow-700 font-bold' : 'text-gray-500'}">SKU: ${product.sku}</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-lg font-bold ${isGift ? 'text-yellow-800' : 'text-emerald-600'}">${formatter.format(priceValue)}</span>
+                    <button data-sku="${product.sku}" class="add-to-quote-btn bg-emerald-500 text-white py-1 px-3 rounded-full text-sm font-medium hover:bg-emerald-600 transition duration-150 shadow-md">
+                        Añadir
+                    </button>
+                </div>
+            `;
+            productList.appendChild(productCard);
         });
 
-        // Manejador del nuevo botón de Volver al inicio
-        backToHomeButton.addEventListener('click', resetApp);
-    </script>
+        document.querySelectorAll('.add-to-quote-btn').forEach(button => {
+            button.addEventListener('click', handleAddToQuote);
+        });
+    }
+
+    function renderQuoteItems() {
+        quoteItemsDisplay.innerHTML = '';
+        if (quote.items.length === 0) {
+            emptyQuoteMessage.classList.remove('hidden');
+            return;
+        }
+        emptyQuoteMessage.classList.add('hidden');
+
+        quote.items.forEach((item, index) => {
+            const isGift = item.product.category === 'Regalo';
+            const priceValue = parseFloat(item.product.price) || 0;
+            const totalItemPrice = priceValue * item.quantity;
+            
+            const itemDiv = document.createElement('div');
+            itemDiv.className = `flex items-center justify-between text-sm ${isGift ? 'bg-yellow-100 text-yellow-800 font-semibold' : 'bg-gray-50 text-gray-700'} p-2 rounded border-l-4 ${isGift ? 'border-yellow-500' : 'border-emerald-500'}`;
+            itemDiv.innerHTML = `
+                <div class="flex flex-col truncate">
+                    <span class="font-medium truncate">${item.product.name}</span>
+                    <span class="text-xs text-gray-500">x${item.quantity}</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="font-bold">${formatter.format(totalItemPrice)}</span>
+                    <button data-index="${index}" class="remove-item-btn text-red-500 hover:text-red-700 p-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path d="M8.75 1A2.75 2.75 0 0 0 6 3.75v.5H2.75a.75.75 0 0 0 0 1.5h.581l1.194 9.553A2.75 2.75 0 0 0 7.279 17.5h5.442a2.75 2.75 0 0 0 2.75-2.525l1.194-9.553h.581a.75.75 0 0 0 0-1.5H14V3.75A2.75 2.75 0 0 0 11.25 1h-2.5ZM10 6a.75.75 0 0 1 .75.75v6.5a.75.75 0 0 1-1.5 0v-6.5A.75.75 0 0 1 10 6Zm3.25 3.5a.75.75 0 0 0 0 1.5h.008a.75.75 0 0 0 0-1.5H13.25ZM6.75 10a.75.75 0 0 0-.75.75v.008a.75.75 0 0 0 1.5 0V10.75a.75.75 0 0 0-.75-.75Z"/></svg>
+                    </button>
+                </div>
+            `;
+            quoteItemsDisplay.appendChild(itemDiv);
+        });
+
+        document.querySelectorAll('.remove-item-btn').forEach(button => {
+            button.addEventListener('click', handleRemoveItem);
+        });
+    }
+
+    function populateCategoryFilter() {
+        const uniqueCategories = [...new Set(productCatalog.map(p => p.category))];
+        uniqueCategories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category;
+            option.textContent = category;
+            categoryFilter.appendChild(option);
+        });
+    }
+
+    function handleAddToQuote(event) {
+        const sku = event.currentTarget.dataset.sku;
+        const product = productCatalog.find(p => p.sku === sku);
+        if (product) {
+            const existingItem = quote.items.find(item => item.product.sku === sku);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                quote.items.push({ product, quantity: 1 });
+            }
+            calculateQuote();
+            renderQuoteItems();
+            renderProductList(searchInput.value, categoryFilter.value);
+        }
+    }
+
+    function handleRemoveItem(event) {
+        const index = parseInt(event.currentTarget.dataset.index);
+        if (index >= 0) {
+            quote.items.splice(index, 1);
+            calculateQuote();
+            renderQuoteItems();
+            renderProductList(searchInput.value, categoryFilter.value);
+        }
+    }
+
+    function handleInitialPreset(percent) {
+        const total = parseFloat(totalDisplay.dataset.value) || 0;
+        initialPaymentInput.value = (total * (percent / 100)).toFixed(0);
+        calculateQuote();
+    }
+
+    function clearQuote() {
+        quote.items = [];
+        discountPercentageInput.value = '0';
+        initialPaymentInput.value = '0';
+        customTermInput.value = '';
+        calculateQuote();
+        renderQuoteItems();
+        renderProductList();
+    }
+
+    function calculateQuote() {
+        quote.discountPercentage = parseFloat(discountPercentageInput.value) || 0;
+        quote.interestRate = parseFloat(interestRateInput.value) || 0;
+        quote.initialPayment = parseFloat(initialPaymentInput.value) || 0;
+
+        const subtotalItems = quote.items.filter(item => item.product.category !== 'Regalo');
+        const subtotal = subtotalItems.reduce((sum, item) => sum + (parseFloat(item.product.price) * item.quantity), 0);
+        const discountAmount = subtotal * (quote.discountPercentage / 100);
+        const total = subtotal - discountAmount;
+        const amountFinanced = Math.max(0, total - quote.initialPayment);
+        const rateMonthly = (quote.interestRate / 100) / 12;
+
+        // --- GENERADOR DE BOTONES AUTOMÁTICOS ---
+        const standardTerms = [12, 18, 24, 31];
+        const container = document.getElementById('term-options-container');
+        container.innerHTML = ''; 
+
+        standardTerms.forEach(n => {
+            let cuotaSug = 0;
+            if (amountFinanced > 0 && rateMonthly > 0) {
+                cuotaSug = amountFinanced * (rateMonthly * Math.pow((1 + rateMonthly), n)) / (Math.pow((1 + rateMonthly), n) - 1);
+            }
+
+            const isSelected = (!customTermInput.value || customTermInput.value == 0) && quote.termMonths === n;
+            const card = document.createElement('div');
+            card.className = `flex flex-col p-2 border rounded-lg cursor-pointer transition ${isSelected ? 'border-emerald-600 bg-emerald-100 ring-2 ring-emerald-500' : 'border-gray-200 bg-white'}`;
+            
+            card.innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <input type="radio" name="term" value="${n}" ${isSelected ? 'checked' : ''} class="text-emerald-600">
+                    <span class="text-sm font-bold text-gray-800">${n} Meses</span>
+                </div>
+                <span class="text-xs text-emerald-700 font-bold mt-1">${formatter.format(cuotaSug)}</span>
+            `;
+
+            card.onclick = () => {
+                customTermInput.value = ''; 
+                quote.termMonths = n;
+                calculateQuote();
+            };
+            container.appendChild(card);
+        });
+
+        let finalTerm = (customTermInput.value && parseInt(customTermInput.value) > 0) ? parseInt(customTermInput.value) : quote.termMonths;
+        let monthlyPayment = 0;
+        if (amountFinanced > 0 && rateMonthly > 0) {
+            monthlyPayment = amountFinanced * (rateMonthly * Math.pow((1 + rateMonthly), finalTerm)) / (Math.pow((1 + rateMonthly), finalTerm) - 1);
+        }
+
+        subtotalDisplay.textContent = formatter.format(subtotal);
+        discountAmountDisplay.textContent = formatter.format(-discountAmount);
+        totalDisplay.textContent = formatter.format(total);
+        totalDisplay.dataset.value = total.toFixed(2);
+        amountFinancedDisplay.textContent = formatter.format(amountFinanced);
+        monthlyPaymentDisplay.textContent = formatter.format(monthlyPayment);
+
+        const giftItems = quote.items.filter(item => item.product.category === 'Regalo');
+        const totalGiftValue = giftItems.reduce((sum, item) => sum + (parseFloat(item.product.price) * item.quantity), 0);
+        giftTotalDisplay.textContent = formatter.format(totalGiftValue);
+        giftMaxDisplay.textContent = formatter.format(total * 0.10);
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        populateCategoryFilter();
+        renderProductList();
+        searchInput.addEventListener('input', () => renderProductList(searchInput.value, categoryFilter.value));
+        categoryFilter.addEventListener('change', () => renderProductList(searchInput.value, categoryFilter.value));
+        discountPercentageInput.addEventListener('input', calculateQuote);
+        interestRateInput.addEventListener('input', calculateQuote);
+        initialPaymentInput.addEventListener('input', calculateQuote);
+        customTermInput.addEventListener('input', calculateQuote);
+        document.querySelectorAll('.term-radio').forEach(radio => radio.addEventListener('change', () => {
+            customTermInput.value = '';
+            calculateQuote();
+        }));
+        document.querySelectorAll('.preset-initial-btn').forEach(btn => btn.addEventListener('click', () => handleInitialPreset(parseInt(btn.dataset.percent))));
+        clearQuoteButton.addEventListener('click', clearQuote);
+        calculateQuote();
+    });
+
+// --- LÓGICA DE ENVÍO POR WHATSAPP ---
+document.getElementById('send-whatsapp-button').addEventListener('click', () => {
+    const cliente = document.getElementById('client-name').value || "Cliente";
+    const telefono = document.getElementById('client-whatsapp').value.replace(/\D/g, ''); // Limpia caracteres no numéricos
+    
+    if (quote.items.length === 0) {
+        alert("Por favor, añade productos a la cotización primero.");
+        return;
+    }
+
+    if (!telefono) {
+        alert("Por favor, introduce un número de WhatsApp.");
+        return;
+    }
+
+    // Construcción del mensaje
+    let mensaje = `*COTIZACIÓN ROYAL PRESTIGE - WEYMAX SRL*%0A`;
+    mensaje += `*Cliente:* ${cliente}%0A`;
+    mensaje += `--------------------------%0A`;
+    
+    quote.items.forEach(item => {
+        const precio = parseFloat(item.product.price);
+        mensaje += `• ${item.product.name} (x${item.quantity}) - ${formatter.format(precio * item.quantity)}%0A`;
+    });
+
+    const total = parseFloat(totalDisplay.dataset.value);
+    const inicial = parseFloat(initialPaymentInput.value) || 0;
+    const financiado = parseFloat(amountFinancedDisplay.textContent.replace(/[^0-9.-]+/g,""));
+    const cuota = monthlyPaymentDisplay.textContent;
+    const plazo = (customTermInput.value && parseInt(customTermInput.value) > 0) ? customTermInput.value : quote.termMonths;
+
+    mensaje += `--------------------------%0A`;
+    mensaje += `*Total a Invertir:* ${formatter.format(total)}%0A`;
+    mensaje += `*Pago Inicial:* ${formatter.format(inicial)}%0A`;
+    mensaje += `*Monto Financiado:* ${formatter.format(financiado)}%0A`;
+    mensaje += `*Cuotas:* ${plazo} pagos de ${cuota}%0A%0A`;
+    mensaje += `_Precios sujetos a cambios. Válido por 15 días._`;
+
+    // Abrir WhatsApp
+    const url = `https://wa.me/${telefono}?text=${mensaje}`;
+    window.open(url, '_blank');
+});
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./service-worker.js")
+    .then(() => console.log("PWA activada 🚀"))
+    .catch(err => console.log("Error:", err));
+}
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./service-worker.js")
+    .then(() => console.log("PWA activada 🚀"))
+    .catch(err => console.log("Error:", err));
+}
+</script>
+
 </body>
 </html>
